@@ -14,14 +14,14 @@ import java.util.List;
 @RestController
 public class UserController {
     private int nextId = 0;
-    private final HashMap<Integer, User> users = new HashMap<>();
+    private HashMap<Integer, User> users = new HashMap<>();
 
     private Integer getNextId() {
         return ++nextId;
     }
 
     @PostMapping("/users")
-    public void create(@RequestBody User user) throws ValidationException {
+    public User create(@RequestBody User user) throws ValidationException {
         log.info("POST /users request received");
 
         User addUser;
@@ -40,10 +40,11 @@ public class UserController {
         }
 
         log.info("POST /users request done");
+        return addUser;
     }
 
     @PutMapping("/users")
-    public void update(@RequestBody User updateUser) throws ValidationException {
+    public User update(@RequestBody User updateUser) throws ValidationException {
         log.info("PUT /users request received");
         Integer updateId = updateUser.getId();
         if (users.containsKey(updateId)) {
@@ -58,6 +59,7 @@ public class UserController {
             throw new ValidationException("Update user id is not valid");
         }
         log.info("PUT /users request done");
+        return updateUser;
     }
 
     @GetMapping("/users")
