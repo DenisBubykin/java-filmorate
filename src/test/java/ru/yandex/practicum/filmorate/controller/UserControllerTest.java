@@ -70,11 +70,6 @@ class UserControllerTest {
 
     @Test
     void ShouldUseLoginAsNameIfNameIsEmpty() {
-        String login = "common";
-        String email = "friend@common.ru";
-        LocalDate date = LocalDate.of(2000, 8, 20);
-
-
         User user1 = new User(1, "", login, email, date);
         try {
             uController.create(user1);
