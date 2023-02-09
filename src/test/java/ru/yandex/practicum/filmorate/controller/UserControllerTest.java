@@ -76,7 +76,7 @@ class UserControllerTest {
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
-        assertEquals(user.getLogin(), uController.getUsers().get(0).getEmail());
+        assertEquals(user.getLogin(), uController.getUsers().get(0));
     }
 
     @Test
