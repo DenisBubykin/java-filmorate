@@ -11,6 +11,7 @@ public class User {
     @NonNull
     private int id;
 
+    @NonNull
     private final String name;
     @NonNull
     private String login;
