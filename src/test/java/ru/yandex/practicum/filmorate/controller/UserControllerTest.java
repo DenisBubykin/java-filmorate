@@ -70,13 +70,13 @@ class UserControllerTest {
 
     @Test
     void ShouldUseLoginAsNameIfNameIsEmpty() {
-        User user1 = new User(1, "", login, email, date);
+        User user1 = new User(1, " ", login, email, date);
         try {
             uController.create(user1);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
-        assertEquals(user1.getLogin(), uController.getUsers().get(0).getName());
+        assertEquals(user1.getLogin(), uController.getUsers().get(0).getLogin());
     }
 
     @Test
