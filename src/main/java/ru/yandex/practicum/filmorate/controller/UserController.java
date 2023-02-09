@@ -28,7 +28,7 @@ public class UserController {
         User addUser;
         if (isValid(user)) {
             if (user.getName() == null || user.getName().isEmpty()) {
-                addUser = new User(getNextId(), "",
+                addUser = new User(getNextId(), user.getLogin(),
                         user.getLogin(), user.getEmail(), user.getBirthday());
             } else {
                 addUser = new User(getNextId(), user.getName(),
