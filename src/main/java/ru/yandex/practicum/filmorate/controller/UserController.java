@@ -22,14 +22,14 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public User create(@Valid @RequestBody User user) throws ValidationException {
+    public User create(@RequestBody User user) throws ValidationException {
         log.info("POST /users request received");
 
         User addUser;
         if (isValid(user)) {
-            if (user.getName().isEmpty()) {
-                addUser = new User(0, user.getEmail(),
-                        user.getName(), user.getLogin(), user.getBirthday());
+            if (user.getName() == null || user.getName().isEmpty()) {
+                addUser = new User(getNextId(), user.getEmail(),
+                        user.getLogin(), user.getLogin(), user.getBirthday());
             } else {
                 addUser = new User(getNextId(), user.getName(),
                         user.getLogin(), user.getEmail(), user.getBirthday());
