@@ -28,8 +28,8 @@ public class UserController {
         User addUser;
         if (isValid(user)) {
             if (user.getName() == null || user.getName().isEmpty()) {
-                addUser = new User(getNextId(), user.getEmail(),
-                        user.getLogin(), user.getLogin(), user.getBirthday());
+                addUser = new User(getNextId(), "",
+                        user.getLogin(), user.getEmail(), user.getBirthday());
             } else {
                 addUser = new User(getNextId(), user.getName(),
                         user.getLogin(), user.getEmail(), user.getBirthday());
