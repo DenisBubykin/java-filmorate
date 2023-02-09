@@ -20,7 +20,7 @@ public class UserController {
         return ++nextId;
     }
 
-    @PostMapping("/users")
+    @PostMapping(value = "/users")
     public User create(@RequestBody User user) throws ValidationException {
         log.info("POST /users request received");
 
@@ -43,7 +43,7 @@ public class UserController {
         return addUser;
     }
 
-    @PutMapping("/users")
+    @PutMapping(value = "/users")
     public User update(@RequestBody User updateUser) throws ValidationException {
         log.info("PUT /users request received");
         Integer updateId = updateUser.getId();
@@ -62,7 +62,7 @@ public class UserController {
         return updateUser;
     }
 
-    @GetMapping("/users")
+    @GetMapping(value = "/users")
     public List<User> getUsers() {
         log.info("GET /users request received");
         List<User> list = new ArrayList<>(users.values());
