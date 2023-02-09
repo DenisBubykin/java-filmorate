@@ -23,6 +23,7 @@ public class UserController {
     @PostMapping(value = "/users")
     public User create(@RequestBody User user) throws ValidationException {
         log.info("POST /users request received");
+
         User addUser;
         if (isValid(user)) {
             if (user.getName().isEmpty()) {
@@ -41,7 +42,6 @@ public class UserController {
         log.info("POST /users request done");
         return addUser;
     }
-
 
     @PutMapping(value = "/users")
     public User update(@RequestBody User updateUser) throws ValidationException {
