@@ -10,11 +10,10 @@ public class User {
 
     private final int id;
     @NonNull
-    private String name;
+    private String email;
     @NonNull
     private String login;
-    @NonNull
-    private String email;
+    private final String name;
     @NonNull
     private final LocalDate birthday;
 
