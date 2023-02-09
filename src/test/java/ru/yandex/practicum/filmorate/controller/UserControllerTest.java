@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class UserControllerTest {
 
     private UserController uController;
-    static private String name;
+    static private String name = "name";
     static private String login = "login";
     static private String email = "test@yandex.ru";
     static private LocalDate date = LocalDate.of(1999, 10, 5);
