@@ -70,7 +70,7 @@ class UserControllerTest {
 
     @Test
     void ShouldUseLoginAsNameIfNameIsEmpty() {
-        User user1 = new User(1, "",login, email, date);
+        User user1 = new User(1, login, login, email, date);
         try {
             uController.create(user1);
         } catch (ValidationException e) {
