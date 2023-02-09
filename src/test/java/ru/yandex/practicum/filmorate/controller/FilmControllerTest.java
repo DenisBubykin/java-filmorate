@@ -1,42 +1,127 @@
 package ru.yandex.practicum.filmorate.controller;
 
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-class FilmControllerTest {
-    private final FilmController filmController = new FilmController();
+public class FilmControllerTest {
+    private FilmController fController;
+    private static String name;
+    private static String description;
+    private static LocalDate date;
+    private static int duration;
 
-    @Test
-    public void addFilm_BadReleaseDateValidationTest() {
-        Film film = Film.builder()
-                .id(1)
-                .name("Blabla")
-                .description("some description")
-                .releaseDate(LocalDate.of(1895, 12, 27))
-                .duration(Duration.ofMinutes(130))
-                .build();
+    @BeforeEach
+    public void create() {
+        fController = new FilmController();
+    }
 
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+    @BeforeAll
+    public static void createFields() {
+        name = "name";
+        description = "description";
+        date = LocalDate.of(1999, 10, 5);
+        duration = 100;
     }
 
     @Test
-    public void addFilm_GoodReleaseDateValidationTest() {
-        Film film = Film.builder()
-                .id(2)
-                .name("Foo")
-                .description("some description")
-                .releaseDate(LocalDate.of(1895, 12, 29))
-                .duration(Duration.ofMinutes(130))
-                .build();
+    void ShouldValidateName(){
+        String name2 = "";
+        Film film1 = new Film(1, name, description, date, duration);
+        Film film2= new Film(2, name2, description, date,  duration);
+        try {
+            fController.create(film1);
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
+        }
+        assertEquals(film1, fController.getFilms().get(0));
+        assertThrows(ValidationException.class, () -> fController.create(film2));
+    }
 
-        assertDoesNotThrow(() -> filmController.addFilm(film));
+    @Test
+    void ShouldValidateDescriptionLength(){
+        String line = "qwertyuiopasdfghjklzxcvbnm";
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i < 10; i++) {
+            sb.append(line);
+        }
+        String description2 = sb.toString();
+        Film film1 = new Film(1, name, description, date, duration);
+        Film film2 = new Film(2, name, description2, date, duration);
+        try {
+            fController.create(film1);
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
+        }
+        assertEquals(film1, fController.getFilms().get(0));
+        assertThrows(ValidationException.class, () -> fController.create(film2));
+    }
+
+    @Test
+    void ShouldValidateRealiseDate() {
+        LocalDate date2 = LocalDate.of(1895, 12, 28);
+        LocalDate date3 = LocalDate.of(1700, 10, 5);
+        Film film1 = new Film(1, name, description, date, duration);
+        Film film2= new Film(2, name, description, date2, duration);
+        Film film3= new Film(3, name, description, date3, duration);
+        try {
+            fController.create(film1);
+            fController.create(film2);
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
+        }
+        assertEquals(film1, fController.getFilms().get(0));
+        assertEquals(film2, fController.getFilms().get(1));
+        assertThrows(ValidationException.class, () -> fController.create(film3));
+    }
+
+    @Test
+    void ShouldValidateDuration(){
+        Film film1 = new Film(1, name, description, date, 1);
+        Film film2= new Film(2, name, description, date, -1);
+        Film film3= new Film(3, name, description, date, 0);
+        try {
+            fController.create(film1);
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
+        }
+        assertEquals(film1, fController.getFilms().get(0));
+        assertThrows(ValidationException.class, () -> fController.create(film2));
+        assertThrows(ValidationException.class, () -> fController.create(film3));
+    }
+
+    @Test
+    void ShouldValidateId(){
+        Film film1 = new Film(1, name, description, date, 1);
+        Film film2= new Film(2, name, description, date, 2);
+        Film film3= new Film(3, name, description, date, 3);
+        try {
+            fController.create(film1);
+            fController.create(film2);
+            fController.create(film3);
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
+        }
+        Film updateFilm1 = new Film(1, name, description, date, 100);
+        Film updateFilm2 = new Film(0, name, description, date, 100);
+        Film updateFilm3 = new Film(-1, name, description, date, 100);
+        try {
+            fController.update(updateFilm1);
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
+        }
+        assertEquals(updateFilm1, fController.getFilms().get(0));
+        assertThrows(ValidationException.class, () -> fController.update(updateFilm2));
+        assertThrows(ValidationException.class, () -> fController.update(updateFilm3));
     }
 }

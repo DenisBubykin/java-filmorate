@@ -1,25 +1,19 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
-import javax.validation.constraints.*;
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
-@Builder
-
 public class Film {
-
-    private long id;
-    @NotEmpty
+    private final int id;
+    @NonNull
     private final String name;
+    @NonNull
     private final String description;
-    @NotNull
+    @NonNull
     private final LocalDate releaseDate;
-    @NotNull
-    private final Duration duration;
-
-
+    @NonNull
+    private final int duration;
 }
