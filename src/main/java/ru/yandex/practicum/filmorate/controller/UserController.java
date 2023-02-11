@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private int nextId = 0;
     private HashMap<Integer, User> users = new HashMap<>();
@@ -21,8 +23,8 @@ public class UserController {
         return ++nextId;
     }
 
-    @PostMapping(value = "/users")
-    public User create(@RequestBody User user) throws ValidationException {
+    @PostMapping
+    public User create(@Valid @RequestBody User user) throws ValidationException {
         log.info("POST /users request received");
 
         User addUser;
@@ -44,8 +46,8 @@ public class UserController {
         return addUser;
     }
 
-    @PutMapping(value = "/users")
-    public User update(@RequestBody User updateUser) throws ValidationException {
+    @PutMapping
+    public User update(@Valid @RequestBody User updateUser) throws ValidationException {
         log.info("PUT /users request received");
         Integer updateId = updateUser.getId();
         if (users.containsKey(updateId)) {
@@ -63,9 +65,9 @@ public class UserController {
         return updateUser;
     }
 
-    @GetMapping(value = "/users")
+    @GetMapping
     public List<User> getUsers() {
-        log.info("GET /users request received");
+        log.info("Get all users {}", users.size());
         List<User> list = new ArrayList<>(users.values());
         log.info("GET /users request done");
         return list;

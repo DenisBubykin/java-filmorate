@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/films")
 public class FilmController {
     public final static LocalDate VALIDATE_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private int nextId = 0;
@@ -21,8 +23,8 @@ public class FilmController {
         return ++nextId;
     }
 
-    @PostMapping(value = "/films")
-    public Film create(@RequestBody Film film) throws ValidationException {
+    @PostMapping
+    public Film create(@Valid @RequestBody Film film) throws ValidationException {
         log.info("POST /films request received");
         Film addFilm;
         if (isValid(film)) {
@@ -37,8 +39,8 @@ public class FilmController {
         return addFilm;
     }
 
-    @PutMapping(value = "/films")
-    public Film update(@RequestBody Film updateFilm) throws ValidationException {
+    @PutMapping
+    public Film update(@Valid @RequestBody Film updateFilm) throws ValidationException {
         log.info("PUT /films request received");
         Integer updateId = updateFilm.getId();
         if (films.containsKey(updateId)) {
@@ -56,9 +58,9 @@ public class FilmController {
         return updateFilm;
     }
 
-    @GetMapping(value = "/films")
+    @GetMapping
     public List<Film> getFilms(){
-        log.info("GET /films request received");
+        log.info("Get all films {}", films.size());
         List<Film> list = new ArrayList<>(films.values());
         log.info("GET /films request done");
         return list;
