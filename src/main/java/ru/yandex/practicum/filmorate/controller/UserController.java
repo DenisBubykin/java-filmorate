@@ -17,39 +17,23 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private int nextId = 0;
-    private HashMap<Integer, User> users = new HashMap<>();
+    private HashMap<Long, User> users = new HashMap<>();
 
-    private Integer getNextId() {
+    private long getNextId() {
         return ++nextId;
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) throws ValidationException {
-        log.info("POST /users request received");
-
-        User addUser;
-        if (isValid(user)) {
-            if (user.getName() == null || user.getName().isEmpty()) {
-                addUser = new User(getNextId(), user.getLogin(),
-                        user.getLogin(), user.getEmail(), user.getBirthday());
-            } else {
-                addUser = new User(getNextId(), user.getName(),
-                        user.getLogin(), user.getEmail(), user.getBirthday());
-            }
-            users.put(addUser.getId(), addUser);
-        } else {
-            log.error("Request POST /users contains invalid data");
-            throw new ValidationException("New user data is not valid");
-        }
-
-        log.info("POST /users request done");
-        return addUser;
+    public User create(@Valid @RequestBody final User user) {
+        log.info("Creating user {}", user);
+        users.put(getNextId(), user);
+        return user;
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User updateUser) throws ValidationException {
         log.info("PUT /users request received");
-        Integer updateId = updateUser.getId();
+        long updateId = updateUser.getId();
         if (users.containsKey(updateId)) {
             if (isValid(updateUser)) {
                 users.put(updateId, updateUser);

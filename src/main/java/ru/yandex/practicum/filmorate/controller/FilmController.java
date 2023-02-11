@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -17,32 +18,23 @@ import java.util.List;
 public class FilmController {
     public final static LocalDate VALIDATE_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private int nextId = 0;
-    private HashMap<Integer, Film> films = new HashMap<>();
+    private Map<Long, Film> films = new HashMap<>();
 
-    private int getNextId() {
+    private long getNextId() {
         return ++nextId;
     }
 
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) throws ValidationException {
-        log.info("POST /films request received");
-        Film addFilm;
-        if (isValid(film)) {
-            addFilm = new Film(getNextId(), film.getName(),
-                    film.getDescription(), film.getReleaseDate(), film.getDuration());
-            films.put(addFilm.getId(), addFilm);
-        } else {
-            log.error("Request POST /films contains invalid data");
-            throw new ValidationException("New film data is not valid");
-        }
-        log.info("POST /films request done");
-        return addFilm;
+    public Film create(@Valid @RequestBody final Film film) {
+        log.info("Creating film {}", film);
+        films.put(getNextId(), film);
+        return film;
     }
 
     @PutMapping
-    public Film update(@Valid @RequestBody Film updateFilm) throws ValidationException {
+    public Film update(@Valid @RequestBody Film updateFilm) {
         log.info("PUT /films request received");
-        Integer updateId = updateFilm.getId();
+        long updateId = updateFilm.getId();
         if (films.containsKey(updateId)) {
             if (isValid(updateFilm)){
                 films.put(updateId, updateFilm);

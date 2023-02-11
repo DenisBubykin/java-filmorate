@@ -12,6 +12,10 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 
 public class User {
     @NotNull
