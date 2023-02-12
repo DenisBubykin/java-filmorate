@@ -45,13 +45,16 @@ public class FilmControllerTest {
             System.out.println(e.getMessage());
         }
         assertEquals(film1, fController.getFilms().get(0));
+        assertThrows(ValidationException.class, () -> fController.update(film2));
+
+
 
 
     }
 
     @Test
     void ShouldValidateDescriptionLength(){
-        String line = "qwertyuiopasdfghjklzxcvbnm";
+        String line = "qwertyuiopasdf";
         StringBuilder sb = new StringBuilder();
         for (int i=0; i < 10; i++) {
             sb.append(line);
@@ -65,6 +68,7 @@ public class FilmControllerTest {
             System.out.println(e.getMessage());
         }
         assertEquals(film1, fController.getFilms().get(0));
+        assertThrows(ValidationException.class, () -> fController.update(film2));
 
     }
 
@@ -83,6 +87,7 @@ public class FilmControllerTest {
         }
         assertEquals(film1, fController.getFilms().get(0));
         assertEquals(film2, fController.getFilms().get(1));
+        assertThrows(ValidationException.class, () -> fController.update(film3));
 
     }
 
@@ -97,6 +102,8 @@ public class FilmControllerTest {
             System.out.println(e.getMessage());
         }
         assertEquals(film1, fController.getFilms().get(0));
+        assertThrows(ValidationException.class, () -> fController.update(film2));
+        assertThrows(ValidationException.class, () -> fController.update(film3));
 
     }
 

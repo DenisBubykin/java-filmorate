@@ -47,6 +47,8 @@ class UserControllerTest {
             System.out.println(e.getMessage());
         }
         assertEquals(user1, uController.getUsers().get(0));
+        assertThrows(ValidationException.class, () -> uController.update(user2));
+        assertThrows(ValidationException.class, () -> uController.update(user3));
     }
 
     @Test
@@ -62,6 +64,8 @@ class UserControllerTest {
             System.out.println(e.getMessage());
         }
         assertEquals(user1, uController.getUsers().get(0));
+        assertThrows(ValidationException.class, () -> uController.update(user2));
+        assertThrows(ValidationException.class, () -> uController.update(user3));
     }
 
     @Test
@@ -86,6 +90,7 @@ class UserControllerTest {
             System.out.println(e.getMessage());
         }
         assertEquals(user1, uController.getUsers().get(0));
+        assertThrows(ValidationException.class, () -> uController.update(user2));
     }
 
     @Test
