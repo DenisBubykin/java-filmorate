@@ -27,7 +27,6 @@ public class FilmController {
     @PostMapping
     @Valid
     Film create(@Valid @RequestBody final Film film) {
-        log.info("Creating film {}", film);
         films.put(getNextId(), film);
         return film;
     }
@@ -53,7 +52,7 @@ public class FilmController {
 
     @GetMapping
     public List<Film> getFilms(){
-        log.info("Get all films {}", films.size());
+        log.info("Get all films {}");
         List<Film> list = new ArrayList<>(films.values());
         log.info("GET /films request done");
         return list;
