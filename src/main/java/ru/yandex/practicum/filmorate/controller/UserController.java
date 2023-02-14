@@ -25,14 +25,18 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) throws ValidationException {
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("ДР не может быть в будущем. ");
+        if (isValid(user)) {
+            user.setId(nextId);
+            users.put(getNextId(), user);
+            log.info("POST / users request received");
+        } else {
+            throw new ValidationException("Create user is not Valid");
         }
-        if (user.getName() == null || user.getName().length() == 0) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         log.info("POST / users request received");
-        users.put(getNextId(), user);
+
         return user;
     }
 
