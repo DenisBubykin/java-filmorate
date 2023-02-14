@@ -25,6 +25,12 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            throw new ValidationException("ДР не может быть в будущем. ");
+        }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
         log.info("POST / users request received");
         users.put(getNextId(), user);
         return user;
