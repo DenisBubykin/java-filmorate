@@ -10,12 +10,9 @@ import java.time.LocalDate;
 @Setter
 @EqualsAndHashCode
 @ToString
-
-
 public class Film {
 
-    @NotBlank
-    private long id;
+    private Integer id;
     @NotBlank
     private String name;
     @Size(min = 1, max = 200)

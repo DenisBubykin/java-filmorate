@@ -14,11 +14,9 @@ import java.time.LocalDate;
 @Setter
 @EqualsAndHashCode
 @ToString
-
 public class User {
 
-    @NotBlank
-    private long id;
+    private Integer id;
     private String name;
     @NotNull
     private String login;
