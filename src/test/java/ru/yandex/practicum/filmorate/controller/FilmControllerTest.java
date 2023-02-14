@@ -51,7 +51,7 @@ public class FilmControllerTest {
 
     @Test
     void ShouldValidateDescriptionLength(){
-        String line = "qwertyuiopasdf";
+        String line = "qwertyuiopasdftfftffufgu";
         StringBuilder sb = new StringBuilder();
         for (int i=0; i < 10; i++) {
             sb.append(line);
