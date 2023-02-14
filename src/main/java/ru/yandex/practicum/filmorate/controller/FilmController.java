@@ -57,7 +57,7 @@ public class FilmController {
     }
 
     @GetMapping
-    public List<Film> getFilms(){;
+    public List<Film> getFilms() {;
         List<Film> list = new ArrayList<>(films.values());
         log.info("GET /films request done");
         return list;
