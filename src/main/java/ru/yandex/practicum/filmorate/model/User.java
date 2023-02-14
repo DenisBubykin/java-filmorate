@@ -18,6 +18,7 @@ import java.time.LocalDate;
 
 public class User {
 
+    @NotNull
     private long id;
     private String name;
     @NotNull

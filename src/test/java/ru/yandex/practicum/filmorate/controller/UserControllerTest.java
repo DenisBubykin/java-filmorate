@@ -38,9 +38,9 @@ class UserControllerTest {
     void ShouldValidateUserEmail(){
         String email2 = " ";
         String email3 = "testyandex.ru";
-        User user1 = new User(0, name, login, email, date);
-        User user2 = new User(1, name, login, email2, date);
-        User user3 = new User(2, name, login, email3, date);
+        User user1 = new User(1, name, login, email, date);
+        User user2 = new User(2, name, login, email2, date);
+        User user3 = new User(3, name, login, email3, date);
         try {
             uController.create(user1);
         } catch (ValidationException e) {
