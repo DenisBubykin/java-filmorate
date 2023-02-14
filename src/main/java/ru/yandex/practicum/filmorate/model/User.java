@@ -3,9 +3,9 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.*;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-
 
 
 @AllArgsConstructor
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 
 public class User {
 
-    @NotNull
+    @NotBlank
     private long id;
     private String name;
     @NotNull
