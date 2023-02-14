@@ -19,7 +19,7 @@ public class FilmControllerTest {
     private static String name;
     private static String description;
     private static LocalDate date;
-    private static int duration;
+    private static Integer duration;
 
     @BeforeEach
     public void create() {
