@@ -30,7 +30,7 @@ public class FilmController {
         if (isValid(film)) {
             film.setId(nextId);
             films.put(getNextId(), film);
-            log.info("POST /films request received");
+            log.info("Create film with id = {}", film.getId());
         } else {
             throw new ValidationException("Create film is not valid");
         }
