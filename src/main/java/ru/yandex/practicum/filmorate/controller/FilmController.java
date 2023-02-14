@@ -28,6 +28,7 @@ public class FilmController {
     @Valid
     Film create(@Valid @RequestBody final Film film) {
         films.put(getNextId(), film);
+        log.info("POST /films create c if = {}", film.getId());
         return film;
     }
 
