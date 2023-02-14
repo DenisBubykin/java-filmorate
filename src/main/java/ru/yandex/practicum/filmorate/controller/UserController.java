@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping("/users")
 public class UserController {
     private int nextId = 0;
     private HashMap<Long, User> users = new HashMap<>();
@@ -25,6 +25,9 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) throws ValidationException {
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            throw new ValidationException("ДР не может быть в будущем. ");
+        }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
