@@ -22,7 +22,7 @@ public class Film {
     @NonNull
     private LocalDate releaseDate;
     @Positive
-    @Min(0)
+    @Min(1)
     private Integer duration;
 
     }
