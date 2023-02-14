@@ -26,9 +26,14 @@ public class FilmController {
 
     @PostMapping
     @Valid
-    Film create(@Valid @RequestBody final Film film) {
-        log.info("POST /films request received");
-        films.put(getNextId(), film);
+    Film create(@Valid @RequestBody final Film film) throws ValidationException {
+        if (isValid(film)) {
+            film.setId(nextId);
+            films.put(getNextId(), film);
+            log.info("POST /films request received");
+        } else {
+            throw new ValidationException("Create film is not valid");
+        }
         return film;
     }
 
