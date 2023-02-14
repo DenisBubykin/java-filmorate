@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/films")
+@RequestMapping(value = "/films")
 public class FilmController {
     public final static LocalDate VALIDATE_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private int nextId = 0;

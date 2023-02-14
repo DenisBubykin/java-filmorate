@@ -24,14 +24,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) {
-        log.info("Add user {}", user);
-        if (!users.containsKey(user.getId())) {
-            isValid(user);
-            if (user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-        }
+    public User create(@Valid @RequestBody User user) {
+        log.info("POST / users request received");
         users.put(getNextId(), user);
         return user;
     }
