@@ -28,7 +28,7 @@ public class UserController {
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("ДР не может быть в будущем. ");
         }
-        if (user.getName() == null || user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().length() == 0) {
             user.setName(user.getLogin());
         }
         log.info("POST / users request received");
