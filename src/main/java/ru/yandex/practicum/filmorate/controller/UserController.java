@@ -32,7 +32,7 @@ public class UserController {
             user.setName(user.getLogin());
         }
         log.info("POST / users request received");
-
+        users.put(getNextId(), user);
         return user;
     }
 
