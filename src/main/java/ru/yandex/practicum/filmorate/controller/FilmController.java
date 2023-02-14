@@ -26,7 +26,7 @@ public class FilmController {
 
     @PostMapping
     @Valid
-    Film create(@Valid @RequestBody final Film film) throws ValidationException {
+    Film create(@Valid @RequestBody Film film) throws ValidationException {
         if (isValid(film)) {
             film.setId(nextId);
             films.put(getNextId(), film);
