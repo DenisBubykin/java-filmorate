@@ -14,8 +14,7 @@ import java.time.LocalDate;
 
 public class Film {
 
-    private Integer id;
-
+    private long id;
     private String name;
     @Size(min = 1, max = 200)
     private String description;
