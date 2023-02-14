@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) {
+    public User create(@Valid @RequestBody User user) throws ValidationException {
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("ДР не может быть в будущем. ");
         }

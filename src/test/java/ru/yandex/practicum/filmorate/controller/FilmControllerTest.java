@@ -47,9 +47,6 @@ public class FilmControllerTest {
         assertEquals(film1, fController.getFilms().get(0));
         assertThrows(ValidationException.class, () -> fController.update(film2));
 
-
-
-
     }
 
     @Test
