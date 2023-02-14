@@ -42,7 +42,7 @@ class UserControllerTest {
         User user2 = new User(2, name, login, email2, date);
         User user3 = new User(3, name, login, email3, date);
         try {
-            uController.create(user1);
+            uController.addUser(user1);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
@@ -59,7 +59,7 @@ class UserControllerTest {
         User user2 = new User(2, name, login2, email, date);
         User user3 = new User(3, name, login3, email, date);
         try {
-            uController.create(user1);
+            uController.addUser(user1);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
@@ -72,7 +72,7 @@ class UserControllerTest {
     void ShouldUseLoginAsNameIfNameIsEmpty() {
         User user = new User(0, "", login, email, date);
         try {
-            uController.create(user);
+            uController.addUser(user);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
@@ -85,7 +85,7 @@ class UserControllerTest {
         User user1 = new User(1, name, login, email, date);
         User user2 = new User(2, name,login, email, date2);
         try {
-            uController.create(user1);
+            uController.addUser(user1);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
@@ -99,9 +99,9 @@ class UserControllerTest {
         User user2 = new User(2, name, login, email, date);
         User user3 = new User(3, name, login, email, date);
         try {
-            uController.create(user1);
-            uController.create(user2);
-            uController.create(user3);
+            uController.addUser(user1);
+            uController.addUser(user2);
+            uController.addUser(user3);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
