@@ -28,6 +28,7 @@ public class UserController {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
+        log.info("POST / users request received");
         users.put(getNextId(), user);
         return user;
     }

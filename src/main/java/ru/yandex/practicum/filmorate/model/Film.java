@@ -15,13 +15,13 @@ import java.time.LocalDate;
 public class Film {
 
     private long id;
+    @NotBlank
     private String name;
     @Size(min = 1, max = 200)
     private String description;
-    @NonNull
+    @NotNull
     private LocalDate releaseDate;
     @Positive
-    @Min(1)
     private Integer duration;
 
     }
