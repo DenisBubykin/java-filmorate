@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private int nextId = 1;
+    private int nextId = 0;
     private HashMap<Long, User> users = new HashMap<>();
 
     private long getNextId() {
@@ -32,6 +32,8 @@ public class UserController {
             user.setName(user.getLogin());
         }
         log.info("POST / users request received");
+        long userId = getNextId();
+        user.setId(userId);
         users.put(getNextId(), user);
         return user;
     }
