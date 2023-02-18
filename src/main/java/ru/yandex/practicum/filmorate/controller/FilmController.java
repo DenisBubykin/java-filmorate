@@ -17,11 +17,11 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
     public final static LocalDate VALIDATE_RELEASE_DATE = LocalDate.of(1895, 12, 28);
-    private int nextId = 0;
+    private int nextId = 1;
     private Map<Long, Film> films = new HashMap<>();
 
     private long getNextId() {
-        return ++nextId;
+        return nextId++;
     }
 
     @PostMapping

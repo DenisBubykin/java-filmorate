@@ -16,11 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private int nextId = 0;
+    private int nextId = 1;
     private HashMap<Long, User> users = new HashMap<>();
 
     private long getNextId() {
-        return ++nextId;
+        return nextId++;
     }
 
     @PostMapping
