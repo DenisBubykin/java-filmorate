@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @ToString
 public class User {
 
-    private Long id;
+    private Integer id;
     private String name;
     @NotNull
     private String login;

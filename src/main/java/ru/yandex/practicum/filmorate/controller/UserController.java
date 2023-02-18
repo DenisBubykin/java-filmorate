@@ -17,9 +17,9 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private int nextId = 0;
-    private HashMap<Long, User> users = new HashMap<>();
+    private HashMap<Integer, User> users = new HashMap<>();
 
-    private long getNextId() {
+    private int getNextId() {
         return nextId++;
     }
 
@@ -32,7 +32,7 @@ public class UserController {
             user.setName(user.getLogin());
         }
         log.info("POST / users request received");
-        long userId = getNextId();
+        int userId = getNextId();
         user.setId(userId);
         users.put(getNextId(), user);
         return user;
@@ -41,7 +41,7 @@ public class UserController {
     @PutMapping
     public User update(@Valid @RequestBody User updateUser) throws ValidationException {
         log.info("PUT /users request received");
-        long updateId = updateUser.getId();
+        int updateId = updateUser.getId();
         if (users.containsKey(updateId)) {
             if (isValid(updateUser)) {
                 users.put(updateId, updateUser);
