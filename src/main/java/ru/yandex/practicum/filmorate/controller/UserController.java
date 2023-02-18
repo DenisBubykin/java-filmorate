@@ -34,7 +34,7 @@ public class UserController {
         log.info("POST / users request received");
         int userId = getNextId();
         user.setId(userId);
-        users.put(getNextId(), user);
+        users.put(userId, user);
         return user;
     }
 

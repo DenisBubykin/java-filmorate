@@ -18,9 +18,9 @@ import java.util.Map;
 public class FilmController {
     public final static LocalDate VALIDATE_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private int nextId = 1;
-    private Map<Long, Film> films = new HashMap<>();
+    private Map<Integer, Film> films = new HashMap<>();
 
-    private long getNextId() {
+    private int getNextId() {
         return nextId++;
     }
 
@@ -28,8 +28,9 @@ public class FilmController {
     @Valid
     Film create(@Valid @RequestBody Film film) throws ValidationException {
         if (isValid(film)) {
-            film.setId(nextId);
-            films.put(getNextId(), film);
+            int filmId = getNextId();
+            film.setId(filmId);
+            films.put(filmId, film);
             log.info("POST /films request received");
         } else {
             throw new ValidationException("Create film is not valid");
@@ -40,7 +41,7 @@ public class FilmController {
     @PutMapping
     public Film update(@Valid @RequestBody Film updateFilm) {
         log.info("PUT /films request received");
-        long updateId = updateFilm.getId();
+        int updateId = updateFilm.getId();
         if (films.containsKey(updateId)) {
             if (isValid(updateFilm)){
                 films.put(updateId, updateFilm);
