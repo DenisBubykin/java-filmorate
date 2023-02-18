@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @ToString
 public class User {
+    @NotNull
     private Integer id;
     private String name;
     @NotNull

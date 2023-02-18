@@ -11,8 +11,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @ToString
 public class Film {
-
-
+    @NotNull
     private Integer id;
     @NotBlank
     private String name;
