@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @ToString
 public class Film {
 
+    @NotNull
     private int id;
     @NotBlank
     private String name;
