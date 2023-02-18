@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private int nextId = 0;
+    private int nextId = 1;
     private HashMap<Integer, User> users = new HashMap<>();
 
     private int getNextId() {
