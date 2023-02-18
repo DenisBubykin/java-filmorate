@@ -105,9 +105,9 @@ class UserControllerTest {
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
-        User updateUser1 = new User(1, "update name", login, email, date);
-        User updateUser2 = new User(0, "update name", login, email, date);
-        User updateUser3 = new User(-1,"update name", login, email, date);
+        User updateUser1 = new User(1, "name", login, email, date);
+        User updateUser2 = new User(0, "name", login, email, date);
+        User updateUser3 = new User(-1,"name", login, email, date);
         try {
             uController.update(updateUser1);
         } catch (ValidationException e) {

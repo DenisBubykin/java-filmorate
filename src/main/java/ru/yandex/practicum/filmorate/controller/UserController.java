@@ -28,9 +28,6 @@ public class UserController {
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("ДР не может быть в будущем. ");
         }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
         log.info("POST / users request received");
         users.put(getNextId(), user);
         return user;
@@ -63,13 +60,15 @@ public class UserController {
         return list;
     }
 
-    public boolean isValid(User user){
+    public boolean isValid(User user) {
         LocalDate validBirthday = LocalDate.now();
         boolean result = false;
         if (!user.getEmail().isEmpty() && user.getEmail().contains("@")) {
             if (!user.getLogin().isEmpty() && !user.getLogin().contains(" ")) {
                 if (user.getBirthday().isBefore(validBirthday)) {
-                    result = true;
+                    if (user.getName() == null || user.getName().isBlank()) {
+                        result = true;
+                    }
                 }
             }
         }
