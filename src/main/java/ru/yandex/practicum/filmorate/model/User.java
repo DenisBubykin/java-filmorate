@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @ToString
 public class User {
 
+    @NotNull
     private Integer id;
     private String name;
     @NotNull
