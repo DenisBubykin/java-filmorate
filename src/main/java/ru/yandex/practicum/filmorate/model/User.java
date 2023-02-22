@@ -16,7 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 public class User {
-    private Integer id;
+    private Long id;
     private String name;
     @NotNull
     private String login;

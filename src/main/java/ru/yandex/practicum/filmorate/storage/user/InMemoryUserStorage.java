@@ -14,8 +14,8 @@ import java.util.Set;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private final HashMap<Integer, User> users = new HashMap<>();
-    private int id = 1;
+    private final HashMap<Long, User> users = new HashMap<>();
+    private Long id = 1L;
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserStorage.class);
 
     @Override

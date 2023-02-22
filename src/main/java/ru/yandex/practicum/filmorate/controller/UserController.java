@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 
 
 import javax.validation.Valid;
@@ -16,6 +18,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
     private int nextId = 1;
     private HashMap<Integer, User> users = new HashMap<>();
 
@@ -24,45 +33,18 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) throws ValidationException {
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("ДР не может быть в будущем. ");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        log.info("POST / users request received");
-        int userId = getNextId();
-        user.setId(userId);
-        users.put(userId, user);
-        return user;
+    public User create(@Valid @RequestBody User user) {
+        return userService.getUserStorage().create(user);
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User updateUser) throws ValidationException {
-        log.info("PUT /users request received");
-        int updateId = updateUser.getId();
-        if (users.containsKey(updateId)) {
-            if (isValid(updateUser)) {
-                users.put(updateId, updateUser);
-            } else {
-                log.error("Request PUT /users contains invalid data");
-                throw new ValidationException("Update user date is not valid");
-            }
-        } else {
-            log.error("Request PUT /users contains invalid id");
-            throw new ValidationException("Update user id is not valid");
-        }
-        log.info("PUT /users request done");
-        return updateUser;
+    public User update(@Valid @RequestBody User updateUser) {
+        return userService.getUserStorage().update(updateUser);
     }
 
     @GetMapping
     public List<User> getUsers() {
-        log.info("Get all users {}", users.size());
-        List<User> list = new ArrayList<>(users.values());
-        log.info("GET /users request done");
-        return list;
+        return userService.getUserStorage().getUsers();
     }
 
     public boolean isValid(User user){
