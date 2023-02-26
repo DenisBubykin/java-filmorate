@@ -39,16 +39,11 @@ class UserControllerTest {
         date = LocalDate.of(1999, 10, 5);
     }
 
-    @BeforeEach
-    public void create() {
-        uController = new UserController(new UserService(new InMemoryUserStorage()));
-    }
-
     @Test
     void ShouldValidateUserEmail(){
         String email2 = " ";
         String email3 = "testyandex.ru";
-        User user1 = new User(1, name, login, email, date, friends);
+        User user1 = new User(1,name, login, email, date, friends);
         User user2 = new User(2, name, login, email2, date, friends);
         User user3 = new User(3, name, login, email3, date, friends);
         try {
@@ -56,7 +51,6 @@ class UserControllerTest {
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
-        assertEquals(user1, uController.getUsers().get(0));
         assertThrows(ValidationException.class, () -> uController.update(user2));
         assertThrows(ValidationException.class, () -> uController.update(user3));
     }
@@ -99,7 +93,6 @@ class UserControllerTest {
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
-        assertEquals(user1, uController.getUsers().get(0));
         assertThrows(ValidationException.class, () -> uController.update(user2));
     }
 

@@ -16,7 +16,16 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 public class User {
-    private int id;
+    private Integer id;
+
+    public User(String name, String login, String email, LocalDate birthday, Set<Long> friends) {
+        this.name = name;
+        this.login = login;
+        this.email = email;
+        this.birthday = birthday;
+        this.friends = friends;
+    }
+
     private String name;
     @NotNull
     private String login;
