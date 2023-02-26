@@ -2,29 +2,30 @@ package ru.yandex.practicum.filmorate.controller;
 
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class FilmControllerTest {
+    @Autowired
     private FilmController fController;
+    @Autowired
+    private FilmStorage filmStorage;
     private static String name;
     private static String description;
     private static LocalDate date;
     private static Integer duration;
+    private static Set<Long> likes;
 
-    @BeforeEach
-    public void create() {
-        fController = new FilmController();
-    }
 
     @BeforeAll
     public static void createFields() {
@@ -35,80 +36,46 @@ public class FilmControllerTest {
     }
 
     @Test
-    void ShouldValidateName(){
-        String name2 = "";
-        Film film1 = new Film(1, name, description, date, duration);
-        Film film2= new Film(2, name2, description, date,  duration);
-        try {
-            fController.create(film1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(film1, fController.getFilms().get(0));
-        assertThrows(ValidationException.class, () -> fController.update(film2));
+    void testCreateFilmWhenNameIsNotEmpty(){
+        filmStorage.getFilms().forEach(film -> filmStorage.delete(film));
+        Film film = new Film(name, description, date, duration, likes);
+        assertDoesNotThrow(() -> fController.create(film));
+        assertEquals(film, fController.getFilms().get(0));
 
     }
 
     @Test
-    void ShouldValidateDescriptionLength(){
+    void testCreateFilmWhenNameIsEmpty(){
+        Film film = new Film("", description, date, duration, likes);
+        assertThrows(ValidationException.class, () -> fController.create(film));
+    }
+
+    @Test
+    void testIsValidWhenDescriptionMoreThen() {
         String line = "qwertyuiopasdftfftffufgu";
-        StringBuilder sb = new StringBuilder();
-        for (int i=0; i < 10; i++) {
-            sb.append(line);
-        }
-        String description2 = sb.toString();
-        Film film1 = new Film(1, name, description, date, duration);
-        Film film2 = new Film(2, name, description2, date, duration);
-        try {
-            fController.create(film1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(film1, fController.getFilms().get(0));
-        assertThrows(ValidationException.class, () -> fController.update(film2));
-
+        Film film = new Film(name, line.repeat(10), date, duration, likes);
+        assertThrows(ValidationException.class, () -> fController.create(film));
     }
 
     @Test
-    void ShouldValidateRealiseDate() {
-        LocalDate date2 = LocalDate.of(1895, 12, 28);
-        LocalDate date3 = LocalDate.of(1700, 10, 5);
-        Film film1 = new Film(1, name, description, date, duration);
-        Film film2= new Film(2, name, description, date2, duration);
-        Film film3= new Film(3, name, description, date3, duration);
-        try {
-            fController.create(film1);
-            fController.create(film2);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(film1, fController.getFilms().get(0));
-        assertEquals(film2, fController.getFilms().get(1));
-        assertThrows(ValidationException.class, () -> fController.update(film3));
-
+    void testIsValidWhenRealiseDate() {
+        LocalDate date = LocalDate.of(1700, 10, 5);
+        Film film = new Film(name, description, date, duration, likes);
+        assertThrows(ValidationException.class, () -> fController.create(film));
     }
 
     @Test
-    void ShouldValidateDuration(){
-        Film film1 = new Film(1, name, description, date, 1);
-        Film film2= new Film(2, name, description, date, -1);
-        Film film3= new Film(3, name, description, date, 0);
-        try {
-            fController.create(film1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(film1, fController.getFilms().get(0));
-        assertThrows(ValidationException.class, () -> fController.update(film2));
-        assertThrows(ValidationException.class, () -> fController.update(film3));
+    void testIsValidWhenDuration(){
+        Film film = new Film(2, name, description, date, -1, likes);
+        assertThrows(ValidationException.class, () -> fController.create(film));
 
     }
 
     @Test
     void ShouldValidateId(){
-        Film film1 = new Film(1, name, description, date, 1);
-        Film film2= new Film(2, name, description, date, 2);
-        Film film3= new Film(3, name, description, date, 3);
+        Film film1 = new Film(1, name, description, date, 1, likes);
+        Film film2= new Film(2, name, description, date, 2, likes);
+        Film film3= new Film(3, name, description, date, 3, likes);
         try {
             fController.create(film1);
             fController.create(film2);
@@ -116,9 +83,9 @@ public class FilmControllerTest {
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
-        Film updateFilm1 = new Film(1, name, description, date, 100);
-        Film updateFilm2 = new Film(0, name, description, date, 100);
-        Film updateFilm3 = new Film(-1, name, description, date, 100);
+        Film updateFilm1 = new Film(1, name, description, date, 100, likes);
+        Film updateFilm2 = new Film(0, name, description, date, 100, likes);
+        Film updateFilm3 = new Film(-1, name, description, date, 100, likes);
         try {
             fController.update(updateFilm1);
         } catch (ValidationException e) {

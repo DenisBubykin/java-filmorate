@@ -16,13 +16,15 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 public class User {
-    private Long id;
+    private int id;
     private String name;
     @NotNull
     private String login;
     @Email
     private String email;
     private LocalDate birthday;
-    private Set<Long> friends = new HashSet<>();
+
+    private Set<Long> friends;
+
 
 }

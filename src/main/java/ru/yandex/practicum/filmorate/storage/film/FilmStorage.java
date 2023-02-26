@@ -10,7 +10,11 @@ public interface FilmStorage {
 
     Film update(Film film);
 
+    void delete(Film film);
+
     List<Film> getFilms();
 
-    Film find(Long id);
+    Film find(int id);
+
+    boolean isValid(Film film);
 }

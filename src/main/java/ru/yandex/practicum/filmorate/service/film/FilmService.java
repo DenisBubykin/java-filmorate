@@ -1,28 +1,22 @@
 package ru.yandex.practicum.filmorate.service.film;
 
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FilmService {
-    @Getter
     private final FilmStorage filmStorage;
-    private final int MAX_QUANTITY_POPULAR_FILMS = 10;
+    private static final int MAX_QUANTITY_POPULAR_FILMS = 10;
+    private static final String NO_SUCH_LIKE = "No likes";
 
-    @Autowired
-    public FilmService(FilmStorage filmStorage) {
-        this.filmStorage = filmStorage;
-    }
-
-    public void addLike(Long filmId, Long userId) {
+    public void addLike(Integer filmId, Long userId) {
         Film film = filmStorage.find(filmId);
         Set<Long> likes = film.getLikes();
         likes.add(userId);
@@ -30,7 +24,7 @@ public class FilmService {
         filmStorage.update(film);
     }
 
-    public void deleteLike(Long filmId, Long userId) {
+    public void deleteLike(Integer filmId, Long userId) {
         Film film = filmStorage.find(filmId);
         Set<Long> likes = film.getLikes();
         if (likes.contains(userId)) {
@@ -38,7 +32,7 @@ public class FilmService {
             film.setLikes(likes);
             filmStorage.update(film);
         } else {
-            throw new ValidationException("Нет лайка");
+            throw new NotFoundException(NO_SUCH_LIKE);
         }
     }
     public Set<Film> getPopularFilms(Integer filmQuantity) {
@@ -58,4 +52,15 @@ public class FilmService {
         return popularFilms.stream().limit(filmQuantity).collect(Collectors.toSet());
     }
 
+    public List<Film> getFilms() {
+        return filmStorage.getFilms();
+    }
+
+    public Film create(Film film) {
+        return filmStorage.create(film);
+    }
+
+    public Film update(Film updateFilm) {
+        return filmStorage.update(updateFilm);
+    }
 }

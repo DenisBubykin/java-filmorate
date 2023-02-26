@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,17 +15,26 @@ import java.util.Set;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private final HashMap<Long, User> users = new HashMap<>();
-    private Long id = 1L;
+    private final HashMap<Integer, User> users = new HashMap<>();
+    private int nextId = 1;
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserStorage.class);
+
+    private int getNextId() {
+        return nextId++;
+    }
 
     @Override
     public User create(User user) {
-        user.setName(checkAndReturnName(user));
-        user.setId(id);
-        users.put(id, user);
-        id++;
-        log.debug("Добавлен пользователь: {}", user);
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            throw new ValidationException("ДР не может быть в будущем. ");
+        }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+        log.info("POST / users request received");
+        int userId = getNextId();
+        user.setId(userId);
+        users.put(userId, user);
         return user;
     }
 
@@ -48,17 +58,22 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User update(User user) {
-        User oldUser;
-        user.setName(checkAndReturnName(user));
-        if (users.containsKey(user.getId())) {
-            oldUser = users.get(user.getId());
-            users.put(user.getId(), user);
-            log.debug("Пользователь {} изменен на {}", oldUser, user);
+    public User update(User updateUser) {
+        log.info("PUT /users request received");
+        int updateId = updateUser.getId();
+        if (users.containsKey(updateId)) {
+            if (isValid(updateUser)) {
+                users.put(updateId, updateUser);
+            } else {
+                log.error("Request PUT /users contains invalid data");
+                throw new ValidationException("Update user date is not valid");
+            }
         } else {
-            throw new ValidationException("Пользователя с таким Id нет");
+            log.error("Request PUT /users contains invalid id");
+            throw new ValidationException("Update user id is not valid");
         }
-        return user;
+        log.info("PUT /users request done");
+        return updateUser;
     }
 
     @Override
@@ -86,6 +101,19 @@ public class InMemoryUserStorage implements UserStorage {
             }
         }
         return userList;
+    }
+
+    public boolean isValid(User user){
+        LocalDate validBirthday = LocalDate.now();
+        boolean result = false;
+        if (!user.getEmail().isEmpty() && user.getEmail().contains("@")) {
+            if (!user.getLogin().isEmpty() && !user.getLogin().contains(" ")) {
+                if (user.getBirthday().isBefore(validBirthday)) {
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
 
 }
