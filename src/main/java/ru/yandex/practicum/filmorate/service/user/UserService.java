@@ -55,4 +55,16 @@ public class UserService {
         }
         return commonFriends;
     }
+
+    public List<User> getUsers() {
+        return userStorage.getUsers();
+    }
+
+    public User create(User user) {
+        return userStorage.create(user);
+    }
+
+    public User update(User updateUser) {
+        return userStorage.update(updateUser);
+    }
 }
