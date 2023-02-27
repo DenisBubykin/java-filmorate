@@ -25,16 +25,18 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User create(User user) {
+        if (isValid(user)) {
+            int userId = getNextId();
+            user.setId(userId);
+            users.put(userId, user);
+            log.info("POST / users request received");
+        }
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("ДР не может быть в будущем. ");
         }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        log.info("POST / users request received");
-        int userId = getNextId();
-        user.setId(userId);
-        users.put(userId, user);
         return user;
     }
 

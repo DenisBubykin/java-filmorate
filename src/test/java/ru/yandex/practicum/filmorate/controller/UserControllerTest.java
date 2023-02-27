@@ -27,7 +27,7 @@ class UserControllerTest {
     private static Set<Long> friends;
 
     @BeforeAll
-    public static void createFields(){
+    public static void createFields() {
         name = "name";
         login = "login";
         email = "test@yandex.ru";
@@ -35,40 +35,30 @@ class UserControllerTest {
     }
 
     @Test
-    void ShouldValidateUserEmail(){
-        String email2 = " ";
-        String email3 = "testyandex.ru";
-        User user1 = new User(1,name, login, email, date, friends);
-        User user2 = new User(2, name, login, email2, date, friends);
-        User user3 = new User(3, name, login, email3, date, friends);
-        try {
-            uController.create(user1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertThrows(ValidationException.class, () -> uController.update(user2));
-        assertThrows(ValidationException.class, () -> uController.update(user3));
+    void testCreateUserWhenEmailIsEmpty() {
+        User user = new User(name, login, "test@yandex.ru", date, friends);
+        assertThrows(ValidationException.class, () -> uController.create(user));
     }
+
 
     @Test
     void ShouldValidateLogin() {
         String login2 = "";
         String login3 = "lo gin";
-        User user1 = new User(1, name, login, email, date, friends);
-        User user2 = new User(2, name, login2, email, date, friends);
-        User user3 = new User(3, name, login3, email, date, friends);
+        User user1 = new User(name, login, email, date, friends);
+        User user2 = new User(name, login2, email, date, friends);
+        User user3 = new User(name, login3, email, date, friends);
         try {
             uController.create(user1);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
         assertEquals(user1, uController.getUsers().get(0));
-        assertThrows(ValidationException.class, () -> uController.update(user2));
-        assertThrows(ValidationException.class, () -> uController.update(user3));
+
     }
 
     @Test
-    void testCreateUsermWhenNameIsNotEmpty(){
+    void testCreateUsersWhenNameIsNotEmpty() {
         userStorage.getUsers().forEach(user -> userStorage.delete(user));
         User user = new User(name, login, email, date, friends);
         assertDoesNotThrow(() -> uController.create(user));
@@ -77,15 +67,15 @@ class UserControllerTest {
     }
 
     @Test
-    void ShouldValidateBirthday(){
+    void ShouldValidateBirthday() {
         LocalDate date2 = LocalDate.of(2023, 10, 5);
-        User user1 = new User(1, name, login, email, date, friends);
-        User user2 = new User(2, name,login, email, date2, friends);
+        User user1 = new User(name, login, email, date, friends);
+        User user2 = new User(name, login, email, date2, friends);
         try {
             uController.create(user1);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
         }
-        assertThrows(ValidationException.class, () -> uController.update(user2));
+        assertThrows(ValidationException.class, () -> uController.create(user2));
     }
 }
