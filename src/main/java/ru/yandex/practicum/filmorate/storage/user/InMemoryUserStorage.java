@@ -30,12 +30,8 @@ public class InMemoryUserStorage implements UserStorage {
             user.setId(userId);
             users.put(userId, user);
             log.info("POST / users request received");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("ДР не может быть в будущем. ");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
+        } else {
+            throw new ValidationException("Create user is not valid");
         }
         return user;
     }

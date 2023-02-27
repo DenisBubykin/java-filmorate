@@ -35,11 +35,16 @@ class UserControllerTest {
     }
 
     @Test
-    void testCreateUserWhenEmailIsEmpty() {
-        User user = new User(name, login, "test@yandex.ru", date, friends);
+    void testCreateUserWhenEmailNotCorrect() {
+        User user = new User(name, login, "testyandex.ru", date, friends);
         assertThrows(ValidationException.class, () -> uController.create(user));
     }
 
+    @Test
+    void testCreateUserWhenEmailIsEmpty() {
+        User user = new User(name, login, "", date, friends);
+        assertThrows(ValidationException.class, () -> uController.create(user));
+    }
 
     @Test
     void ShouldValidateLogin() {
@@ -78,4 +83,5 @@ class UserControllerTest {
         }
         assertThrows(ValidationException.class, () -> uController.create(user2));
     }
+
 }
