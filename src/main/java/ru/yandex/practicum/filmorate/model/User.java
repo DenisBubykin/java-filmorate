@@ -10,7 +10,6 @@ import java.util.Set;
 
 
 @AllArgsConstructor
-@Builder(toBuilder = true)
 @Getter
 @Setter
 @EqualsAndHashCode
