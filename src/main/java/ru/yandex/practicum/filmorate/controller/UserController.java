@@ -34,16 +34,16 @@ public class UserController {
         return userService.update(updateUser);
     }
 
-    @PutMapping(value = "/users/{id}/friends/{friendId}")
+    @PutMapping(value = "/{id}/friends/{friendId}")
     public void addFriend(@PathVariable Long id, @PathVariable Long userId) {
         userService.addFriend(id,userId );
     }
-    @DeleteMapping(value = "/users/{id}/friends/{friendId}")
+    @DeleteMapping(value = "/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable Long id, @PathVariable Long userId) {
         userService.deleteFriend(id, userId);
     }
 
-    @GetMapping("users/{id}/friends/common/{otherId}")
+    @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> findCommonFriends(@PathVariable Long ids, @PathVariable Long otherId) {
         return userService.getFriends(ids, otherId);
     }
