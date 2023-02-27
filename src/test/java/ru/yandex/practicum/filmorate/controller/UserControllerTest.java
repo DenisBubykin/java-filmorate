@@ -36,13 +36,13 @@ class UserControllerTest {
 
     @Test
     void testCreateUserWhenEmailNotCorrect() {
-        User user = new User(name, login, "testyandex.ru", date, friends);
+        User user = new User(1, name, login, "testyandex.ru", date, friends);
         assertThrows(ValidationException.class, () -> uController.create(user));
     }
 
     @Test
     void testCreateUserWhenEmailIsEmpty() {
-        User user = new User(name, login, "", date, friends);
+        User user = new User(1, name, login, "", date, friends);
         assertThrows(ValidationException.class, () -> uController.create(user));
     }
 
@@ -50,9 +50,9 @@ class UserControllerTest {
     void ShouldValidateLogin() {
         String login2 = "";
         String login3 = "lo gin";
-        User user1 = new User(name, login, email, date, friends);
-        User user2 = new User(name, login2, email, date, friends);
-        User user3 = new User(name, login3, email, date, friends);
+        User user1 = new User(1, name, login, email, date, friends);
+        User user2 = new User(2, name, login2, email, date, friends);
+        User user3 = new User(3, name, login3, email, date, friends);
         try {
             uController.create(user1);
         } catch (ValidationException e) {
@@ -65,7 +65,7 @@ class UserControllerTest {
     @Test
     void testCreateUsersWhenNameIsNotEmpty() {
         userStorage.getUsers().forEach(user -> userStorage.delete(user));
-        User user = new User(name, login, email, date, friends);
+        User user = new User(1, name, login, email, date, friends);
         assertDoesNotThrow(() -> uController.create(user));
         assertEquals(user, uController.getUsers().get(0));
 
@@ -74,8 +74,8 @@ class UserControllerTest {
     @Test
     void ShouldValidateBirthday() {
         LocalDate date2 = LocalDate.of(2023, 10, 5);
-        User user1 = new User(name, login, email, date, friends);
-        User user2 = new User(name, login, email, date2, friends);
+        User user1 = new User(1, name, login, email, date, friends);
+        User user2 = new User(2, name, login, email, date2, friends);
         try {
             uController.create(user1);
         } catch (ValidationException e) {

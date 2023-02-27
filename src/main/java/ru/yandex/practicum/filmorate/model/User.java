@@ -19,6 +19,7 @@ public class User {
     private Integer id;
 
     public User(String name, String login, String email, LocalDate birthday, Set<Long> friends) {
+
         this.name = name;
         this.login = login;
         this.email = email;
