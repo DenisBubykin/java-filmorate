@@ -16,6 +16,4 @@ public interface UserStorage {
 
     User find(Long id);
 
-    List<User> getUsersByIds(Set<Long> ids);
-
 }
