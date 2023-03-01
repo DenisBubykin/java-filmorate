@@ -7,15 +7,12 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private final HashMap<Integer, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
     private int nextId = 1;
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserStorage.class);
 
@@ -25,16 +22,14 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("ДР не может быть в будущем. ");
+        if (isValid(user)) {
+            int userId = getNextId();
+            user.setId(userId);
+            users.put(userId, user);
+            log.info("POST / users request received");
+        } else {
+            throw new ValidationException("Create user is not valid");
         }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        log.info("POST / users request received");
-        int userId = getNextId();
-        user.setId(userId);
-        users.put(userId, user);
         return user;
     }
 
@@ -90,17 +85,6 @@ public class InMemoryUserStorage implements UserStorage {
         } else {
             throw new ValidationException("неверный номер ID");
         }
-    }
-
-    @Override
-    public List<User> getUsersByIds(Set<Long> ids) {
-        List<User> userList = new ArrayList<>();
-        for (Long id : ids) {
-            if (users.containsKey(id)) {
-                userList.add(users.get(id));
-            }
-        }
-        return userList;
     }
 
     public boolean isValid(User user){
