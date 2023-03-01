@@ -1,87 +1,65 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class UserControllerTest {
-
-    @Autowired
-    private UserController uController;
-    @Autowired
-    private UserStorage userStorage;
-    private static String name;
-    private static String login;
-    private static String email;
-    private static LocalDate date;
-    private static Set<Long> friends;
+public class UserControllerTest {
+    private User user = new User();
+    private static Validator validator;
 
     @BeforeAll
-    public static void createFields() {
-        name = "name";
-        login = "login";
-        email = "test@yandex.ru";
-        date = LocalDate.of(1999, 10, 5);
+    public static void init() {
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
+    }
+
+    @BeforeEach
+    public void beforeEach() {
+        user.setLogin("login");
+        user.setEmail("name@ya.ru");
+        user.setName("name");
+        user.setBirthday(LocalDate.of(2000, 01, 01));
     }
 
     @Test
-    void testCreateUserWhenEmailNotCorrect() {
-        User user = new User(1, name, login, "testyandex.ru", date, friends);
-        assertThrows(ValidationException.class, () -> uController.create(user));
+    void emailValidationTest() {
+        user.setEmail("");
+        Set<ConstraintViolation<User>> validate = validator.validate(user);
+        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
+        assertEquals(1, errorMessages.size());
+        user.setEmail("mail");
+        validate = validator.validate(user);
+        errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
+        assertEquals(1, errorMessages.size());
     }
 
     @Test
-    void testCreateUserWhenEmailIsEmpty() {
-        User user = new User(1, name, login, "", date, friends);
-        assertThrows(ValidationException.class, () -> uController.create(user));
+    void loginValidationTest() {
+        user.setLogin("");
+        Set<ConstraintViolation<User>> validate = validator.validate(user);
+        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
+        assertTrue(errorMessages.contains("логин не может быть пустым и не должен содержать пробелы"));
+        user.setLogin(" login ");
+        validate = validator.validate(user);
+        errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
+        assertTrue(errorMessages.contains("логин не может быть пустым и не должен содержать пробелы"));
     }
 
     @Test
-    void ShouldValidateLogin() {
-        String login2 = "";
-        String login3 = "lo gin";
-        User user1 = new User(1, name, login, email, date, friends);
-        User user2 = new User(2, name, login2, email, date, friends);
-        User user3 = new User(3, name, login3, email, date, friends);
-        try {
-            uController.create(user1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(user1, uController.getUsers().get(0));
-
+    void birthdayValidationTest() {
+        user.setBirthday(LocalDate.of(2095, 12, 27));
+        Set<ConstraintViolation<User>> validate = validator.validate(user);
+        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
+        assertEquals(1, errorMessages.size());
     }
-
-    @Test
-    void testCreateUsersWhenNameIsNotEmpty() {
-        userStorage.getUsers().forEach(user -> userStorage.delete(user));
-        User user = new User(1, name, login, email, date, friends);
-        assertDoesNotThrow(() -> uController.create(user));
-        assertEquals(user, uController.getUsers().get(0));
-
-    }
-
-    @Test
-    void ShouldValidateBirthday() {
-        LocalDate date2 = LocalDate.of(2023, 10, 5);
-        User user1 = new User(1, name, login, email, date, friends);
-        User user2 = new User(2, name, login, email, date2, friends);
-        try {
-            uController.create(user1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertThrows(ValidationException.class, () -> uController.create(user2));
-    }
-
 }

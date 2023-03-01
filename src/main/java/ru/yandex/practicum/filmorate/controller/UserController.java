@@ -24,8 +24,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    private HashMap<Integer, User> users = new HashMap<>();
-
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         return userService.getUserStorage().create(user);

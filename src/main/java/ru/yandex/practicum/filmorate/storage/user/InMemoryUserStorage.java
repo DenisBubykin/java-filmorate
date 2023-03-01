@@ -12,18 +12,18 @@ import java.util.*;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private final Map<Integer, User> users = new HashMap<>();
-    private int nextId = 1;
+    private final Map<Long, User> users = new HashMap<>();
+    private Long nextId = 1L;
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserStorage.class);
 
-    private int getNextId() {
+    private Long getNextId() {
         return nextId++;
     }
 
     @Override
     public User create(User user) {
         if (isValid(user)) {
-            int userId = getNextId();
+            Long userId = getNextId();
             user.setId(userId);
             users.put(userId, user);
             log.info("POST / users request received");
@@ -55,7 +55,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User update(User updateUser) {
         log.info("PUT /users request received");
-        int updateId = updateUser.getId();
+        Long updateId = updateUser.getId();
         if (users.containsKey(updateId)) {
             if (isValid(updateUser)) {
                 users.put(updateId, updateUser);
