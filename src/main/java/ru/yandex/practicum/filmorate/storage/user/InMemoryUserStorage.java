@@ -72,7 +72,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<User> findAll() {
         List<User> userList = new ArrayList<>(users.values());
         log.debug("Текущее количесвто пользователей: {}", users.size());
         return userList;

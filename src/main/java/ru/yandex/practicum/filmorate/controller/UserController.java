@@ -8,9 +8,7 @@ import ru.yandex.practicum.filmorate.service.user.UserService;
 
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @RestController
@@ -24,7 +22,26 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @GetMapping("/users")
+    public List<User> findAll() {
+        return userService.getUserStorage().findAll();
+    }
+
+    @GetMapping("/users/{id}")
+    public User find(@PathVariable Long id) {
+        return userService.getUserStorage().find(id);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<User> findFriends(@PathVariable Long id) {
+        return userService.getFriends(userService.getUserStorage().find(id).getFriends());
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> findCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+        return userService.getCommonFriends(id, otherId);
+    }
+    @PostMapping("/users")
     public User create(@Valid @RequestBody User user) {
         return userService.getUserStorage().create(user);
     }
@@ -34,33 +51,10 @@ public class UserController {
         return userService.getUserStorage().update(updateUser);
     }
 
-    @GetMapping
-    public List<User> getUsers() {
-        return userService.getUserStorage().getUsers();
-    }
-
-    @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<User> findCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
-        return userService.getCommonFriends(id, otherId);
-    }
-
-    @PutMapping(value = "/users/{id}/friends/{friendId}")
-    public void addFriends(@PathVariable Long id, @PathVariable Long userId) {
-        userService.addFriends(id, userId);
-    }
 
     @DeleteMapping(value = "/users/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable Long id, @PathVariable Long userId) {
         userService.deleteFriends(id, userId);
     }
 
-    @GetMapping("/users/{id}/friends")
-    public List<User> findFriends(@PathVariable Long id) {
-        return userService.getFriends(userService.getUserStorage().find(id).getFriends());
-    }
-
-    @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable Set<Long> id, @PathVariable Set<Long> otherId) {
-        return userService.addCommonFriends(id, otherId);
-    }
 }

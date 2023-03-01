@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-@RestControllerAdvice
+@RestControllerAdvice("ru.yandex.practicum.filmorate")
 public class Handler {
 
     @ExceptionHandler(ValidationException.class)
