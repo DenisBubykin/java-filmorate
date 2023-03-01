@@ -53,7 +53,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User update(User updateUser) {
+    public User amend(User updateUser) {
         log.info("PUT /users request received");
         Long updateId = updateUser.getId();
         if (users.containsKey(updateId)) {

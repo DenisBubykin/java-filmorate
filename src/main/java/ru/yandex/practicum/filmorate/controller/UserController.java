@@ -46,14 +46,18 @@ public class UserController {
         return userService.getUserStorage().create(user);
     }
 
-    @PutMapping
-    public User update(@Valid @RequestBody User updateUser) {
-        return userService.getUserStorage().update(updateUser);
+    @PutMapping(value = "/users")
+    public User amend(@Valid @RequestBody User user) {
+        return userService.getUserStorage().amend(user);
     }
 
+    @PutMapping(value = "/users/{id}/friends/{friendId}")
+    public void amend(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.addFriends(id, friendId);
+    }
 
     @DeleteMapping(value = "/users/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable Long id, @PathVariable Long userId) {
+    public void delete(@PathVariable Long id, @PathVariable Long userId) {
         userService.deleteFriends(id, userId);
     }
 

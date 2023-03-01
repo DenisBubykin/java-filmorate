@@ -52,7 +52,7 @@ public class UserService {
         Set<Long> userFriends = user.getFriends();
         userFriends.add(friendId);
         user.setFriends(userFriends);
-        userStorage.update(user);
+        userStorage.amend(user);
     }
 
     public void deleteFriend(Long userId, Long friendId) {
@@ -60,7 +60,7 @@ public class UserService {
         Set<Long> userFriends = user.getFriends();
         userFriends.remove(friendId);
         user.setFriends(userFriends);
-        userStorage.update(user);
+        userStorage.amend(user);
     }
 
     public List<User> addCommonFriends(Set<Long> userId, Set<Long> otherUserId) {
