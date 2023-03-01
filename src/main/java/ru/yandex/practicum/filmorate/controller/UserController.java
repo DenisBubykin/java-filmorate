@@ -3,16 +3,14 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -26,12 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    private int nextId = 1;
     private HashMap<Integer, User> users = new HashMap<>();
-
-    private int getNextId() {
-        return nextId++;
-    }
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
@@ -48,9 +41,14 @@ public class UserController {
         return userService.getUserStorage().getUsers();
     }
 
-    @GetMapping("/users/{id}")
-    public User find(@PathVariable Long id) {
-        return userService.getUserStorage().find(id);
+    @PutMapping(value = "/users/{id}/friends/{friendId}")
+    public void addFriends(@PathVariable Long id, @PathVariable Long userId) {
+        userService.addFriends(id, userId);
+    }
+
+    @DeleteMapping(value = "/users/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable Long id, @PathVariable Long userId) {
+        userService.deleteFriend(id, userId);
     }
 
     @GetMapping("/users/{id}/friends")
@@ -58,8 +56,8 @@ public class UserController {
         return userService.getFriends(userService.getUserStorage().find(id).getFriends());
     }
 
-    @PutMapping("/users/{id}/friends/{friendId}")
-    public void update(@PathVariable Long id, @PathVariable Long friendId) {
-        userService.addFriends(id, friendId);
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable Set<Long> id, @PathVariable Set<Long> otherId) {
+        return userService.addCommonFriends(id, otherId);
     }
 }

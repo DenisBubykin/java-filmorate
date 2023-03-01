@@ -38,7 +38,7 @@ public class UserService {
         userStorage.update(user);
     }
 
-    private void deleteFriend(Long userId, Long friendId) {
+    public void deleteFriend(Long userId, Long friendId) {
         User user = userStorage.find(userId);
         Set<Long> userFriends = user.getFriends();
         userFriends.remove(friendId);
@@ -46,13 +46,14 @@ public class UserService {
         userStorage.update(user);
     }
 
-    private List<User> addCommonFriends(Set<Long> userFriendsIds, Set<Long> otherIdFriendsIds) {
+    public List<User> addCommonFriends(Set<Long> userId, Set<Long> otherUserId) {
         List<User> commonFriends = new ArrayList<>();
-        for (Long id : userFriendsIds) {
-            if (otherIdFriendsIds.contains(id)) {
+        for (Long id : userId) {
+            if (otherUserId.contains(id)) {
                 commonFriends.add(userStorage.find(id));
             }
         }
         return commonFriends;
     }
+
 }
