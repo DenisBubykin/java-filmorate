@@ -87,6 +87,17 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
+    @Override
+    public List<User> getUsersByIds(Set<Long> ids) {
+        List<User> userList = new ArrayList<>();
+        for (Long id : ids) {
+            if (users.containsKey(id)) {
+                userList.add(users.get(id));
+            }
+        }
+        return userList;
+    }
+
     public boolean isValid(User user){
         LocalDate validBirthday = LocalDate.now();
         boolean result = false;
