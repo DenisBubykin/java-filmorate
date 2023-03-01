@@ -8,13 +8,11 @@ public interface FilmStorage {
 
     Film create(Film film);
 
-    Film update(Film film);
-
     void delete(Film film);
+    Film amend(Film film);
 
-    List<Film> getFilms();
+    List<Film> findAll();
 
-    Film find(int id);
+    Film find(Long id);
 
-    boolean isValid(Film film);
 }

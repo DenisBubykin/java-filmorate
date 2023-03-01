@@ -39,7 +39,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film update(Film film) {
+    public Film amend(Film film) {
         Film oldFilm;
         if (films.containsKey(film.getId())) {
             oldFilm = films.get(film.getId());
@@ -62,14 +62,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilms() {
+    public List<Film> findAll() {
         List<Film> filmList = new ArrayList<>(films.values());
         log.debug("Текущее количесвто фильмов: {}", filmList.size());
         return filmList;
     }
 
     @Override
-    public Film find(int id) {
+    public Film find(Long id) {
         if (films.containsKey(id)) {
             return films.get(id);
         } else {

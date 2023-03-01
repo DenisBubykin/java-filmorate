@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service.film;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -10,27 +11,32 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class FilmService {
+    @Getter
     private final FilmStorage filmStorage;
     private static final int MAX_QUANTITY_POPULAR_FILMS = 10;
     private static final String NO_SUCH_LIKE = "No likes";
 
-    public void addLike(Integer filmId, Long userId) {
+    @Autowired
+    public FilmService(FilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
+    }
+
+    public void addLike(Long filmId, Long userId) {
         Film film = filmStorage.find(filmId);
         Set<Long> likes = film.getLikes();
         likes.add(userId);
         film.setLikes(likes);
-        filmStorage.update(film);
+        filmStorage.amend(film);
     }
 
-    public void deleteLike(Integer filmId, Long userId) {
+    public void deleteLike(Long filmId, Long userId) {
         Film film = filmStorage.find(filmId);
         Set<Long> likes = film.getLikes();
         if (likes.contains(userId)) {
             likes.remove(userId);
             film.setLikes(likes);
-            filmStorage.update(film);
+            filmStorage.amend(film);
         } else {
             throw new NotFoundException(NO_SUCH_LIKE);
         }
@@ -44,7 +50,7 @@ public class FilmService {
             }
         };
         Set<Film> popularFilms = new TreeSet<>(filmLikeComparator.reversed());
-        List<Film> films = filmStorage.getFilms();
+        List<Film> films = filmStorage.findAll();
         popularFilms.addAll(films);
         if (Objects.isNull(filmQuantity)) {
             filmQuantity = MAX_QUANTITY_POPULAR_FILMS;
@@ -52,15 +58,4 @@ public class FilmService {
         return popularFilms.stream().limit(filmQuantity).collect(Collectors.toSet());
     }
 
-    public List<Film> getFilms() {
-        return filmStorage.getFilms();
-    }
-
-    public Film create(Film film) {
-        return filmStorage.create(film);
-    }
-
-    public Film update(Film updateFilm) {
-        return filmStorage.update(updateFilm);
-    }
 }
