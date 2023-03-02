@@ -12,9 +12,7 @@ import java.util.List;
 
 @Slf4j
 public class FilmValidator {
-    /**
-     * Валидация фильмов
-     */
+
     public static void isValidFilms(@RequestBody Film film) throws ValidationException {
         if (film.getName().isBlank()) {
             log.warn("Ошибка в названии: {}", film);
@@ -38,9 +36,6 @@ public class FilmValidator {
         }
     }
 
-    /**
-     * Валидация id пользователей
-     */
     public static void isValidIdFilms(int id) throws ValidationException {
         if (id < 0) {
             throw new NotFoundException(String.format("Id фильма {} отрицательный", id));

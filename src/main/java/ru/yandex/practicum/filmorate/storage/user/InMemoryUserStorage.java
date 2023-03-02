@@ -14,17 +14,11 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
     private int idUser = 0;
 
-    /**
-     * получение списка пользователей
-     */
     @Override
     public List<User> getUsers() {
         return new ArrayList<>(users.values());
     }
 
-    /**
-     * создание пользователя
-     */
     @Override
     public User createUser(User user) {
         UserValidator.isValidNameUsers(user);
@@ -34,9 +28,6 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    /**
-     * обновление пользователя
-     */
     @Override
     public User updateUser(User user) {
         if (users.containsKey(user.getId())) {
@@ -48,9 +39,6 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    /**
-     * Удаление пользователей из списка
-     */
     @Override
     public void clearUsers() {
         if (!users.isEmpty()) {
@@ -58,9 +46,6 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    /**
-     * Удаление пользователя по id
-     */
     public void deleteUserById(int id) {
         if (!users.containsKey(id)) {
             throw new NotFoundException(String.format("Пользователь № %d не найден", id));
@@ -68,9 +53,6 @@ public class InMemoryUserStorage implements UserStorage {
         users.remove(id);
     }
 
-    /**
-     * найти пользователя по id
-     */
     public User findUserById(String idStr) {
         int id = Integer.parseInt(idStr);
         if (!users.containsKey(id)) {
@@ -83,9 +65,6 @@ public class InMemoryUserStorage implements UserStorage {
                         () -> new NotFoundException(String.format("Пользователь № %d не найден", id)));
     }
 
-    /**
-     * создание уникального id пользователя
-     */
     private int generateIdUsers() {
         return ++idUser;
     }

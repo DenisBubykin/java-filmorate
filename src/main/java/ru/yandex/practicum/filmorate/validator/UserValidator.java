@@ -10,9 +10,7 @@ import java.util.List;
 
 @Slf4j
 public class UserValidator {
-    /**
-     * Валидация имени пользователей
-     */
+
     public static void isValidNameUsers(User user) throws ValidationException {
         if (user.getEmail().isBlank()) {
             log.warn("Ошибка в email: {}", user);
@@ -40,9 +38,6 @@ public class UserValidator {
         }
     }
 
-    /**
-     * Валидация id пользователей
-     */
     public static void isValidIdUsers(int id) {
         if (id < 0) {
             throw new NotFoundException(String.format("Id пользователя {} отрицательный", id));

@@ -14,15 +14,10 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class InMemoryFilmStorage implements FilmStorage {
-    /**
-     * Хранение списка добавленных фильмов
-     */
+
     private final Map<Integer, Film> films = new HashMap<>();
     private int idFilm = 0;
 
-    /**
-     * добавление фильма в список
-     */
     @Override
     public Film addFilm(Film film) {
         FilmValidator.isValidFilms(film);
@@ -32,9 +27,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    /**
-     * обновление фильма в списке
-     */
     @Override
     public Film updateFilm(Film film) {
         if (films.containsKey(film.getId())) {
@@ -46,9 +38,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    /**
-     * Очистить список фильмов
-     */
     @Override
     public void clearFilms() {
         if (!films.isEmpty()) {
@@ -56,9 +45,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
-    /**
-     * Удаление фильма по id
-     */
     @Override
     public void deleteFilmById(String idStr) {
         int id = Integer.parseInt(idStr);
@@ -68,17 +54,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         films.remove(id);
     }
 
-    /**
-     * получение всех фильмов
-     */
     @Override
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
     }
 
-    /**
-     * получение фильма по id
-     */
     @Override
     public Film findFilmById(String idStr) {
         int id = Integer.parseInt(idStr);
@@ -90,9 +70,6 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .orElseThrow(() -> new NotFoundException(String.format("Film %d not found", id)));
     }
 
-    /**
-     * создание уникального id фильма
-     */
     private int generateIdFilms() {
         return ++idFilm;
     }

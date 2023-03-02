@@ -19,60 +19,36 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    /**
-     * получение списка пользователей
-     */
     public List<User> getUsers() {
         return userStorage.getUsers();
     }
 
-    /**
-     * создание пользователя
-     */
     public User createUser(User user) {
         return userStorage.createUser(user);
     }
 
-    /**
-     * обновление пользователя
-     */
     public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
 
-    /**
-     * Удаление пользователей из списка
-     */
     public void clearUsers() {
         userStorage.clearUsers();
     }
 
-    /**
-     * Удаление пользователя по id
-     */
     public void deleteUserById(String idStr) {
         int id = Integer.parseInt(idStr);
         userStorage.deleteUserById(id);
     }
 
-    /**
-     * найти пользователя по id
-     */
     public User findUserById(String idStr) {
         return userStorage.findUserById(idStr);
     }
 
-    /**
-     * добавление в друга к пользователю
-     */
     public void addFriendsForUsers(String userIdStr, String friendIdStr) {
         addFriends(userIdStr, friendIdStr, userStorage.findUserById(userIdStr));
         addFriends(friendIdStr, userIdStr, userStorage.findUserById(friendIdStr));
     }
 
-    /**
-     * добавление в друзья
-     */
     private void addFriends(String idUser, String idFriend, User userById) {
         int id = Integer.parseInt(idUser);
         int friendId = Integer.parseInt(idFriend);
@@ -92,24 +68,15 @@ public class UserService {
         }
     }
 
-    /**
-     * проверка наличия списка друзей
-     */
     private Boolean isFriendsByUser(String id) {
         return userStorage.findUserById(id).getFriends() != null;
     }
 
-    /**
-     * удаление друга у пользователю
-     */
     public void deleteFriendsForUsers(String userIdStr, String friendIdStr) {
         deleteFriend(userIdStr, friendIdStr, userStorage.findUserById(userIdStr));
         deleteFriend(friendIdStr, userIdStr, userStorage.findUserById(friendIdStr));
     }
 
-    /**
-     * удаление из друзей
-     */
     public void deleteFriend(String idUser, String idFriend, User userById) {
         int id = Integer.parseInt(idUser);
         int friendId = Integer.parseInt(idFriend);
@@ -131,9 +98,6 @@ public class UserService {
         }
     }
 
-    /**
-     * возвращаем список пользователей, являющихся его друзьями
-     */
     public List<User> getFriendsUser(String idStr) {
         List<Integer> idFriendsList = new ArrayList<>(userStorage.findUserById(idStr).getFriends());
         List<User> friendsList = new ArrayList<>();
@@ -143,9 +107,6 @@ public class UserService {
         return friendsList;
     }
 
-    /**
-     * вывод списка общих друзей
-     */
     public List<User> getListFriends(String id, String otherId) {
         UserValidator.isUserByUsers(userStorage.getUsers(), userStorage.findUserById(id));
         UserValidator.isUserByUsers(userStorage.getUsers(), userStorage.findUserById(otherId));
