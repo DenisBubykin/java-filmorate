@@ -4,31 +4,29 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.TreeSet;
 
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
 @ToString
+@Builder
 public class User {
 
-    private Long id;
+    private Integer id;
 
     private String name;
-    @UserLoginConstraint
+    @NotNull
     private String login;
-    @NotBlank
     @Email
     private String email;
-    @Past
     private LocalDate birthday;
-    @JsonIgnore
+
     private Set<Long> friends;
 
 

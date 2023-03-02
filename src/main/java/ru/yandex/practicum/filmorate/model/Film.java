@@ -16,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@Builder
 public class Film {
     private Integer id;
 
@@ -27,7 +28,7 @@ public class Film {
         this.likes = likes;
     }
 
-    @NotBlank
+    @NotNull
     private String name;
     @Size(min = 1, max = 200)
     private String description;

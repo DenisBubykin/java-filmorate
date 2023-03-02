@@ -1,68 +1,95 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
-    private Film film;
-    private static Validator validator;
+    InMemoryFilmStorage inMemoryFilmStorage = new InMemoryFilmStorage();
+    FilmService filmService = new FilmService(inMemoryFilmStorage);
+    FilmController filmControllerTest = new FilmController(filmService);
+    Film expectedFilm;
 
-    @BeforeAll
-    public static void init() {
-        validator = Validation.buildDefaultValidatorFactory().getValidator();
-    }
+    @Test
+    void isValidNameFilms() throws ValidationException {
+        expectedFilm = Film.builder()
+                .name("film")
+                .description("descTest")
+                .releaseDate(LocalDate.now())
+                .duration(120)
+                .build();
+        filmControllerTest.create(expectedFilm);
 
-    @BeforeEach
-    public void beforeEach() {
-        film = new Film();
-        film.setName("name");
-        film.setDescription("description");
-        film.setReleaseDate(LocalDate.of(2022, 01, 01));
-        film.setDuration(90);
+        Film actualFilm = filmControllerTest.getFilms().get(0);
+
+        assertEquals(expectedFilm, actualFilm, "Фильм не добавлен");
     }
 
     @Test
-    void nameValidationTest() {
-        film.setName("");
-        Set<ConstraintViolation<Film>> validate = validator.validate(film);
-        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertEquals(1, errorMessages.size());
+    void isValidNameFilmsBlank() {
+        expectedFilm = Film.builder()
+                .name("")
+                .description("descTest")
+                .releaseDate(LocalDate.now())
+                .duration(120)
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            filmControllerTest.create(expectedFilm);
+        });
+        assertNotNull(thrown.getMessage());
+    }
+
+
+    @Test
+    void isValidDescriptionFilmsMore200() {
+        String expectedDescription = "A" + "a".repeat(200);
+        expectedFilm = Film.builder()
+                .name("film1")
+                .description(expectedDescription)
+                .releaseDate(LocalDate.now())
+                .duration(120)
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            filmControllerTest.create(expectedFilm);
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    void descriptionValidationTest() {
-        film.setDescription("111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
-                "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
-                "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
-        Set<ConstraintViolation<Film>> validate = validator.validate(film);
-        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertEquals(1, errorMessages.size());
+    void isValidReleaseDateFilms() {
+        expectedFilm = Film.builder()
+                .name("film1")
+                .description("desc1")
+                .releaseDate(LocalDate.parse("1895-12-26"))
+                .duration(120)
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            filmControllerTest.create(expectedFilm);
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    void dateValidationTest() {
-        film.setReleaseDate(LocalDate.of(1895, 12, 27));
-        Set<ConstraintViolation<Film>> validate = validator.validate(film);
-        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertFalse(errorMessages.contains("дата релиза — не раньше 28 декабря 1895 года"));
-    }
+    void isValidDurationFilms() {
+        expectedFilm = Film.builder()
+                .name("film1")
+                .description("desc1")
+                .releaseDate(LocalDate.parse("1895-12-28"))
+                .duration(-120)
+                .build();
 
-    @Test
-    void durationValidationTest() {
-        film.setDuration(0);
-        Set<ConstraintViolation<Film>> validate = validator.validate(film);
-        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertEquals(1, errorMessages.size());
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            filmControllerTest.create(expectedFilm);
+        });
+        assertNotNull(thrown.getMessage());
     }
 }

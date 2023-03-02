@@ -1,65 +1,155 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserControllerTest {
-    private User user = new User();
-    private static Validator validator;
+class UserControllerTest {
+    InMemoryUserStorage inMemoryUserStorage = new InMemoryUserStorage();
+    UserService userService = new UserService(inMemoryUserStorage);
+    UserController userController = new UserController(userService);
+    User expectedUser;
+    User expectedUser1;
 
-    @BeforeAll
-    public static void init() {
-        validator = Validation.buildDefaultValidatorFactory().getValidator();
-    }
+    @Test
+    void isValidUser() throws ValidationException {
+        expectedUser = User.builder()
+                .name("user")
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
 
-    @BeforeEach
-    public void beforeEach() {
-        user.setLogin("login");
-        user.setEmail("name@ya.ru");
-        user.setName("name");
-        user.setBirthday(LocalDate.of(2000, 01, 01));
+        userController.create(expectedUser);
+        User actualUser = userController.getUsers().get(0);
+
+        assertEquals(expectedUser, actualUser, "Пользователь не добавлен");
     }
 
     @Test
-    void emailValidationTest() {
-        user.setEmail("");
-        Set<ConstraintViolation<User>> validate = validator.validate(user);
-        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertEquals(1, errorMessages.size());
-        user.setEmail("mail");
-        validate = validator.validate(user);
-        errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertEquals(1, errorMessages.size());
+    void isValidEmailUserBlank() {
+        expectedUser = User.builder()
+                .name("user")
+                .login("login")
+                .email(" ")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+        expectedUser1 = User.builder()
+                .name("user")
+                .login("login")
+                .email("")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            userController.create(expectedUser);
+            userController.create(expectedUser1);
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    void loginValidationTest() {
-        user.setLogin("");
-        Set<ConstraintViolation<User>> validate = validator.validate(user);
-        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertTrue(errorMessages.contains("логин не может быть пустым и не должен содержать пробелы"));
-        user.setLogin(" login ");
-        validate = validator.validate(user);
-        errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertTrue(errorMessages.contains("логин не может быть пустым и не должен содержать пробелы"));
+    void isValidEmailWithSpecialSymbol() {
+        expectedUser = User.builder()
+                .name("user")
+                .login("login")
+                .email("useryandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            userController.create(expectedUser);
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    void birthdayValidationTest() {
-        user.setBirthday(LocalDate.of(2095, 12, 27));
-        Set<ConstraintViolation<User>> validate = validator.validate(user);
-        Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertEquals(1, errorMessages.size());
+    void isValidLoginUserBlank() {
+        expectedUser = User.builder()
+                .name("user")
+                .login("")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+        expectedUser1 = User.builder()
+                .name("user")
+                .login(" ")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            userController.create(expectedUser);
+            userController.create(expectedUser1);
+        });
+        assertNotNull(thrown.getMessage());
+    }
+
+    @Test
+    void isValidNameUserBlank() throws ValidationException {
+        expectedUser = User.builder()
+                .name(" ")
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        userController.create(expectedUser);
+        User actualUser = userController.getUsers().get(0);
+
+        assertEquals(expectedUser.getName(), actualUser.getName(),
+                "Пустой логин не заменен на имя пользователя");
+    }
+
+    @Test
+    void isValidNameUserNull() throws ValidationException {
+        expectedUser = User.builder()
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        userController.create(expectedUser);
+        User actualUser = userController.getUsers().get(0);
+
+        assertEquals(expectedUser.getName(), actualUser.getName(),
+                "Пустой логин не заменен на имя пользователя");
+    }
+
+    @Test
+    void isValidNameUserEmpty() throws ValidationException {
+        expectedUser = User.builder()
+                .name("")
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        userController.create(expectedUser);
+        User actualUser = userController.getUsers().get(0);
+
+        assertEquals(expectedUser.getName(), actualUser.getName(),
+                "Пустой логин не заменен на имя пользователя");
+    }
+
+    @Test
+    void isValidBirthdayUser() {
+        expectedUser = User.builder()
+                .name("user")
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.now().plusDays(1))
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            userController.create(expectedUser);
+        });
+        assertNotNull(thrown.getMessage());
     }
 }

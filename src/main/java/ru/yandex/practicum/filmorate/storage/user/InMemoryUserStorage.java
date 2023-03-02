@@ -12,20 +12,16 @@ import java.util.*;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private final Map<Long, User> users = new HashMap<>();
-    private Long nextId = 1L;
+    private final Map<Integer, User> users = new HashMap<>();
+    private int nextId = 1;
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserStorage.class);
 
-    private Long getNextId() {
-        return nextId++;
-    }
 
     @Override
     public User create(User user) {
         if (isValid(user)) {
-            Long userId = getNextId();
-            user.setId(userId);
-            users.put(userId, user);
+            user.setId(nextId);
+            users.put(user.getId(), user);
             log.info("POST / users request received");
         } else {
             throw new ValidationException("Create user is not valid");
@@ -53,12 +49,10 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User amend(User updateUser) {
-        log.info("PUT /users request received");
-        Long updateId = updateUser.getId();
-        if (users.containsKey(updateId)) {
+    public User update(User updateUser) {
+        if (users.containsKey(updateUser.getId())) {
             if (isValid(updateUser)) {
-                users.put(updateId, updateUser);
+                users.put(updateUser.getId(), updateUser);
             } else {
                 log.error("Request PUT /users contains invalid data");
                 throw new ValidationException("Update user date is not valid");
@@ -72,7 +66,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> getUsers() {
         List<User> userList = new ArrayList<>(users.values());
         log.debug("Текущее количесвто пользователей: {}", users.size());
         return userList;
