@@ -24,7 +24,7 @@ class FilmControllerTest {
                 .releaseDate(LocalDate.now())
                 .duration(120)
                 .build();
-        filmControllerTest.create(expectedFilm);
+        filmControllerTest.addFilm(expectedFilm);
 
         Film actualFilm = filmControllerTest.getFilms().get(0);
 
@@ -41,11 +41,25 @@ class FilmControllerTest {
                 .build();
 
         Throwable thrown = assertThrows(ValidationException.class, () -> {
-            filmControllerTest.create(expectedFilm);
+            filmControllerTest.addFilm(expectedFilm);
         });
         assertNotNull(thrown.getMessage());
     }
 
+    @Test
+    void isValidNameFilmsBlank2() {
+        expectedFilm = Film.builder()
+                .name(" ")
+                .description("descTest")
+                .releaseDate(LocalDate.now())
+                .duration(120)
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            filmControllerTest.addFilm(expectedFilm);
+        });
+        assertNotNull(thrown.getMessage());
+    }
 
     @Test
     void isValidDescriptionFilmsMore200() {
@@ -58,7 +72,7 @@ class FilmControllerTest {
                 .build();
 
         Throwable thrown = assertThrows(ValidationException.class, () -> {
-            filmControllerTest.create(expectedFilm);
+            filmControllerTest.addFilm(expectedFilm);
         });
         assertNotNull(thrown.getMessage());
     }
@@ -73,7 +87,7 @@ class FilmControllerTest {
                 .build();
 
         Throwable thrown = assertThrows(ValidationException.class, () -> {
-            filmControllerTest.create(expectedFilm);
+            filmControllerTest.addFilm(expectedFilm);
         });
         assertNotNull(thrown.getMessage());
     }
@@ -88,7 +102,7 @@ class FilmControllerTest {
                 .build();
 
         Throwable thrown = assertThrows(ValidationException.class, () -> {
-            filmControllerTest.create(expectedFilm);
+            filmControllerTest.addFilm(expectedFilm);
         });
         assertNotNull(thrown.getMessage());
     }

@@ -26,7 +26,7 @@ class UserControllerTest {
                 .birthday(LocalDate.parse("2000-12-12"))
                 .build();
 
-        userController.create(expectedUser);
+        userController.createUser(expectedUser);
         User actualUser = userController.getUsers().get(0);
 
         assertEquals(expectedUser, actualUser, "Пользователь не добавлен");
@@ -48,8 +48,8 @@ class UserControllerTest {
                 .build();
 
         Throwable thrown = assertThrows(ValidationException.class, () -> {
-            userController.create(expectedUser);
-            userController.create(expectedUser1);
+            userController.createUser(expectedUser);
+            userController.createUser(expectedUser1);
         });
         assertNotNull(thrown.getMessage());
     }
@@ -64,7 +64,7 @@ class UserControllerTest {
                 .build();
 
         Throwable thrown = assertThrows(ValidationException.class, () -> {
-            userController.create(expectedUser);
+            userController.createUser(expectedUser);
         });
         assertNotNull(thrown.getMessage());
     }
@@ -85,8 +85,8 @@ class UserControllerTest {
                 .build();
 
         Throwable thrown = assertThrows(ValidationException.class, () -> {
-            userController.create(expectedUser);
-            userController.create(expectedUser1);
+            userController.createUser(expectedUser);
+            userController.createUser(expectedUser1);
         });
         assertNotNull(thrown.getMessage());
     }
@@ -100,7 +100,7 @@ class UserControllerTest {
                 .birthday(LocalDate.parse("2000-12-12"))
                 .build();
 
-        userController.create(expectedUser);
+        userController.createUser(expectedUser);
         User actualUser = userController.getUsers().get(0);
 
         assertEquals(expectedUser.getName(), actualUser.getName(),
@@ -115,7 +115,7 @@ class UserControllerTest {
                 .birthday(LocalDate.parse("2000-12-12"))
                 .build();
 
-        userController.create(expectedUser);
+        userController.createUser(expectedUser);
         User actualUser = userController.getUsers().get(0);
 
         assertEquals(expectedUser.getName(), actualUser.getName(),
@@ -131,7 +131,7 @@ class UserControllerTest {
                 .birthday(LocalDate.parse("2000-12-12"))
                 .build();
 
-        userController.create(expectedUser);
+        userController.createUser(expectedUser);
         User actualUser = userController.getUsers().get(0);
 
         assertEquals(expectedUser.getName(), actualUser.getName(),
@@ -148,7 +148,7 @@ class UserControllerTest {
                 .build();
 
         Throwable thrown = assertThrows(ValidationException.class, () -> {
-            userController.create(expectedUser);
+            userController.createUser(expectedUser);
         });
         assertNotNull(thrown.getMessage());
     }

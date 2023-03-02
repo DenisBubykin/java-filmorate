@@ -27,7 +27,7 @@ public class User {
     private String email;
     private LocalDate birthday;
 
-    private Set<Long> friends;
+    private TreeSet<Integer> friends;
 
 
 }

@@ -18,15 +18,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @Builder
 public class Film {
-    private Integer id;
-
-    public Film(String name, String description, LocalDate releaseDate, Integer duration, Set<Long> likes) {
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.likes = likes;
-    }
+    private int id;
 
     @NotNull
     private String name;
@@ -36,6 +28,5 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private Integer duration;
-    @JsonIgnore
-    private Set<Long> likes;
+    private Set<Integer> usersLike;
 }

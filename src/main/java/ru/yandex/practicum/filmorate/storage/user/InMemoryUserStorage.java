@@ -1,109 +1,92 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.validator.UserValidator;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class InMemoryUserStorage implements UserStorage {
-
     private final Map<Integer, User> users = new HashMap<>();
-    private int nextId = 1;
-    private static final Logger log = LoggerFactory.getLogger(InMemoryUserStorage.class);
+    private int idUser = 0;
 
-
+    /**
+     * получение списка пользователей
+     */
     @Override
-    public User create(User user) {
-        if (isValid(user)) {
-            user.setId(nextId);
+    public List<User> getUsers() {
+        return new ArrayList<>(users.values());
+    }
+
+    /**
+     * создание пользователя
+     */
+    @Override
+    public User createUser(User user) {
+        UserValidator.isValidNameUsers(user);
+        generateIdUsers();
+        user.setId(idUser);
+        users.put(user.getId(), user);
+        return user;
+    }
+
+    /**
+     * обновление пользователя
+     */
+    @Override
+    public User updateUser(User user) {
+        if (users.containsKey(user.getId())) {
+            UserValidator.isValidNameUsers(user);
             users.put(user.getId(), user);
-            log.info("POST / users request received");
         } else {
-            throw new ValidationException("Create user is not valid");
+            throw new NotFoundException("Такого пользователя нет в базе.");
         }
         return user;
     }
 
-    private String checkAndReturnName(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            return user.getLogin();
-        } else {
-            return user.getName();
-        }
-    }
-
+    /**
+     * Удаление пользователей из списка
+     */
     @Override
-    public void delete(User user) {
-        user.setName(checkAndReturnName(user));
-        if (users.containsKey(user.getId())) {
-            users.remove(user.getId());
-            log.debug("Пользователь {} удалён", user);
-        } else {
-            throw new ValidationException("Пользователя с таким Id нет");
+    public void clearUsers() {
+        if (!users.isEmpty()) {
+            users.clear();
         }
     }
 
-    @Override
-    public User update(User updateUser) {
-        if (users.containsKey(updateUser.getId())) {
-            if (isValid(updateUser)) {
-                users.put(updateUser.getId(), updateUser);
-            } else {
-                log.error("Request PUT /users contains invalid data");
-                throw new ValidationException("Update user date is not valid");
-            }
-        } else {
-            log.error("Request PUT /users contains invalid id");
-            throw new ValidationException("Update user id is not valid");
+    /**
+     * Удаление пользователя по id
+     */
+    public void deleteUserById(int id) {
+        if (!users.containsKey(id)) {
+            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
         }
-        log.info("PUT /users request done");
-        return updateUser;
+        users.remove(id);
     }
 
-    @Override
-    public List<User> getUsers() {
-        List<User> userList = new ArrayList<>(users.values());
-        log.debug("Текущее количесвто пользователей: {}", users.size());
-        return userList;
-    }
+    /**
+     * найти пользователя по id
+     */
+    public User findUserById(String idStr) {
+        int id = Integer.parseInt(idStr);
+        if (!users.containsKey(id)) {
+            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
 
-    @Override
-    public User find(Long id) {
-        if (users.containsKey(id)) {
-            return users.get(id);
-        } else {
-            throw new ValidationException("неверный номер ID");
         }
+        return getUsers().stream()
+                .filter(u -> u.getId() == id)
+                .findFirst().orElseThrow(
+                        () -> new NotFoundException(String.format("Пользователь № %d не найден", id)));
     }
 
-    @Override
-    public List<User> getUsersByIds(Set<Long> ids) {
-        List<User> userList = new ArrayList<>();
-        for (Long id : ids) {
-            if (users.containsKey(id)) {
-                userList.add(users.get(id));
-            }
-        }
-        return userList;
+    /**
+     * создание уникального id пользователя
+     */
+    private int generateIdUsers() {
+        return ++idUser;
     }
-
-    public boolean isValid(User user){
-        LocalDate validBirthday = LocalDate.now();
-        boolean result = false;
-        if (!user.getEmail().isEmpty() && user.getEmail().contains("@")) {
-            if (!user.getLogin().isEmpty() && !user.getLogin().contains(" ")) {
-                if (user.getBirthday().isBefore(validBirthday)) {
-                    result = true;
-                }
-            }
-        }
-        return result;
-    }
-
 }
-
