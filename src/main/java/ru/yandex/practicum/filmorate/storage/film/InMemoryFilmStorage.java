@@ -16,7 +16,7 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> films = new HashMap<>();
-    private int idFilm = 0;
+    private long idFilm = 0;
 
     @Override
     public Film addFilm(Film film) {
@@ -68,7 +68,7 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .orElseThrow(() -> new NotFoundException(String.format("Film %d not found", id)));
     }
 
-    private int generateIdFilms() {
+    private long generateIdFilms() {
         return ++idFilm;
     }
 }
