@@ -48,14 +48,14 @@ public class InMemoryUserStorage implements UserStorage {
 
     public void deleteUserById(long id) {
         if (!users.containsKey(id)) {
-            throw new NotFoundException("Пользователь № %d не найден");
+            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
         }
         users.remove(id);
     }
 
     public User findUserById(long id) {
         if (!users.containsKey(id)) {
-            throw new NotFoundException("Пользователь не найден");
+            throw new NotFoundException(String.format("Пользователь не найден", id));
         }
         return getUsers().stream()
                 .filter(u -> u.getId() == id)

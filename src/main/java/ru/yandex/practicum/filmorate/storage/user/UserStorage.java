@@ -16,5 +16,5 @@ public interface UserStorage {
 
     void deleteUserById(long id);
 
-    User findUserById(long idStr);
+    User findUserById(long id);
 }
