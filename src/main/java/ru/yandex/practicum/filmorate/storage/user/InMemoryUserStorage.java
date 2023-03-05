@@ -63,7 +63,7 @@ public class InMemoryUserStorage implements UserStorage {
                         () -> new NotFoundException(String.format("Пользователь № %d не найден", id)));
     }
 
-    private long generateIdUsers() {
-        return ++idUser;
+    private void generateIdUsers() {
+        ++idUser;
     }
 }
