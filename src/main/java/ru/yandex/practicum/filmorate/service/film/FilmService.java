@@ -42,8 +42,8 @@ public class FilmService {
         filmStorage.deleteFilmById(id);
     }
 
-    public Film findFilmById(Long idStr) {
-        return filmStorage.findFilmById(idStr);
+    public Film findFilmById(Long id) {
+        return filmStorage.findFilmById(id);
     }
 
     public void addLikeFilms(Long idFilm, Long idUser) {
@@ -80,8 +80,7 @@ public class FilmService {
         }
     }
 
-    public List<Film> getPopularFilms(String countStr) {
-        int count = Integer.parseInt(countStr);
+    public List<Film> getPopularFilms(Long count) {
         if (filmStorage.getFilms() == null) {
             throw new NotFoundException("Список фильмов пуст.");
         }
