@@ -18,7 +18,7 @@ import java.util.TreeSet;
 @Builder
 public class User {
 
-    private Integer id;
+    private long id;
 
     private String name;
     @NotNull
@@ -27,7 +27,7 @@ public class User {
     private String email;
     private LocalDate birthday;
 
-    private TreeSet<Integer> friends;
+    private TreeSet<Long> friends;
 
 
 }

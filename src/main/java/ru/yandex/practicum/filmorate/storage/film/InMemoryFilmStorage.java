@@ -15,13 +15,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
     private int idFilm = 0;
 
     @Override
     public Film addFilm(Film film) {
         FilmValidator.isValidFilms(film);
-        int id = generateIdFilms();
+        long id = generateIdFilms();
         film.setId(id);
         films.put(film.getId(), film);
         return film;
@@ -46,10 +46,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilmById(String idStr) {
-        int id = Integer.parseInt(idStr);
+    public void deleteFilmById(Long id) {
         if (!films.containsKey(id)) {
-            throw new NotFoundException(String.format("Фильм № %d не найден", id));
+            throw new NotFoundException("Фильм № %d не найден");
         }
         films.remove(id);
     }
@@ -60,8 +59,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilmById(String idStr) {
-        int id = Integer.parseInt(idStr);
+    public Film findFilmById(Long id) {
         if (!films.containsKey(id)) {
             throw new NotFoundException(String.format("Фильм № %d не найден", id));
         }

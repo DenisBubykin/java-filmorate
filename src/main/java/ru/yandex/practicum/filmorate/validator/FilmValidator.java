@@ -36,7 +36,7 @@ public class FilmValidator {
         }
     }
 
-    public static void isValidIdFilms(int id) throws ValidationException {
+    public static void isValidIdFilms(Long id) throws ValidationException {
         if (id < 0) {
             throw new NotFoundException(String.format("Id фильма {} отрицательный", id));
         }

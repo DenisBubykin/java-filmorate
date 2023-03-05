@@ -18,8 +18,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @Builder
 public class Film {
-    private int id;
-
+    private Long id;
     @NotNull
     private String name;
     @Size(min = 1, max = 200)
@@ -28,5 +27,5 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private Integer duration;
-    private Set<Integer> usersLike;
+    private Set<Long> usersLike;
 }

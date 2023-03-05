@@ -47,23 +47,23 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFilmById(@PathVariable String id) {
+    public void deleteFilmById(@PathVariable Long id) {
         log.debug("Удалили фильм по id {}.", id);
         filmService.deleteFilmById(id);
     }
 
     @GetMapping("/{id}")
-    public Film findFilmById(@PathVariable String id) {
+    public Film findFilmById(@PathVariable Long id) {
         return filmService.findFilmById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void addLikeFilm(@PathVariable String id, @PathVariable String userId) {
+    public void addLikeFilm(@PathVariable Long id, @PathVariable Long userId) {
         log.debug("Пользователь с id {} ставит лайк фильму с id {}", userId, id);
         filmService.addLikeFilms(id, userId);
     }
     @DeleteMapping("/{id}/like/{userId}")
-    public void deleteLikeFilm(@PathVariable String id, @PathVariable String userId) {
+    public void deleteLikeFilm(@PathVariable Long id, @PathVariable Long userId) {
         log.debug("Пользователь с id {} удаляет лайк к фильму с id {}", userId, id);
         filmService.deleteLikeFilm(id, userId);
     }

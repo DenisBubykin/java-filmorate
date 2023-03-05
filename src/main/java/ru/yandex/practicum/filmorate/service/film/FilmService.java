@@ -38,49 +38,45 @@ public class FilmService {
         filmStorage.clearFilms();
     }
 
-    public void deleteFilmById(String idStr) {
-        filmStorage.deleteFilmById(idStr);
+    public void deleteFilmById(Long id) {
+        filmStorage.deleteFilmById(id);
     }
 
-    public Film findFilmById(String idStr) {
+    public Film findFilmById(Long idStr) {
         return filmStorage.findFilmById(idStr);
     }
 
-    public void addLikeFilms(String idFilm, String idUser) {
-        int userId = Integer.parseInt(idUser);
-        int filmId = Integer.parseInt(idFilm);
-        FilmValidator.isValidIdFilms(filmId);
-        UserValidator.isValidIdUsers(userId);
+    public void addLikeFilms(Long idFilm, Long idUser) {
+        FilmValidator.isValidIdFilms(idFilm);
+        UserValidator.isValidIdUsers(idUser);
         FilmValidator.isFilmByFilms(filmStorage.getFilms(), findFilmById(idFilm));
 
         if (isLikesByFilm(idFilm)) {
-            Set<Integer> likes = findFilmById(idFilm).getUsersLike();
-            likes.add(userId);
+            Set<Long> likes = findFilmById(idFilm).getUsersLike();
+            likes.add(idUser);
             findFilmById(idFilm).setUsersLike(likes);
         } else {
-            TreeSet<Integer> likes = new TreeSet<>();
-            likes.add(userId);
+            TreeSet<Long> likes = new TreeSet<>();
+            likes.add(idUser);
             findFilmById(idFilm).setUsersLike(likes);
         }
     }
 
-    private Boolean isLikesByFilm(String id) {
+    private Boolean isLikesByFilm(Long id) {
         return filmStorage.findFilmById(id).getUsersLike() != null;
     }
 
-    public void deleteLikeFilm(String idFilm, String idUser) {
-        int userId = Integer.parseInt(idUser);
-        int filmId = Integer.parseInt(idFilm);
-        FilmValidator.isValidIdFilms(filmId);
-        UserValidator.isValidIdUsers(userId);
+    public void deleteLikeFilm(Long idFilm, Long idUser) {
+        FilmValidator.isValidIdFilms(idFilm);
+        UserValidator.isValidIdUsers(idUser);
         FilmValidator.isFilmByFilms(filmStorage.getFilms(), findFilmById(idFilm));
 
         if (isLikesByFilm(idFilm)) {
-            Set<Integer> likes = findFilmById(idFilm).getUsersLike();
-            likes.remove(userId);
+            Set<Long> likes = findFilmById(idFilm).getUsersLike();
+            likes.remove(idUser);
             findFilmById(idFilm).setUsersLike(likes);
         } else {
-            throw new NotFoundException(String.format("У фильма № %d нет лайков", filmId));
+            throw new NotFoundException(String.format("У фильма № %d нет лайков", idFilm));
         }
     }
 

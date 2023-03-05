@@ -11,8 +11,8 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class InMemoryUserStorage implements UserStorage {
-    private final Map<Integer, User> users = new HashMap<>();
-    private int idUser = 0;
+    private final Map<Long, User> users = new HashMap<>();
+    private long idUser = 0;
 
     @Override
     public List<User> getUsers() {
@@ -46,18 +46,16 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    public void deleteUserById(int id) {
+    public void deleteUserById(long id) {
         if (!users.containsKey(id)) {
-            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
+            throw new NotFoundException("Пользователь № %d не найден");
         }
         users.remove(id);
     }
 
-    public User findUserById(String idStr) {
-        int id = Integer.parseInt(idStr);
+    public User findUserById(long id) {
         if (!users.containsKey(id)) {
-            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
-
+            throw new NotFoundException("Пользователь не найден");
         }
         return getUsers().stream()
                 .filter(u -> u.getId() == id)
@@ -65,7 +63,7 @@ public class InMemoryUserStorage implements UserStorage {
                         () -> new NotFoundException(String.format("Пользователь № %d не найден", id)));
     }
 
-    private int generateIdUsers() {
+    private Long generateIdUsers() {
         return ++idUser;
     }
 }

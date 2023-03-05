@@ -14,7 +14,7 @@ public interface UserStorage {
 
     void clearUsers();
 
-    void deleteUserById(int id);
+    void deleteUserById(long id);
 
-    User findUserById(String idStr);
+    User findUserById(long id);
 }

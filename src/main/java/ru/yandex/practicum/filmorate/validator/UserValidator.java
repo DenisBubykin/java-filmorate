@@ -38,15 +38,15 @@ public class UserValidator {
         }
     }
 
-    public static void isValidIdUsers(int id) {
+    public static void isValidIdUsers(Long id) {
         if (id < 0) {
-            throw new NotFoundException(String.format("Id пользователя {} отрицательный", id));
+            throw new NotFoundException("Id пользователя {} отрицательный");
         }
     }
 
     public static void isUserByUsers(List<User> users, User user) {
         if (!users.contains(user)) {
-            throw new NotFoundException(String.format("Пользователь № %d не найден", user.getId()));
+            throw new NotFoundException("Пользователь № %d не найден");
         }
     }
 }

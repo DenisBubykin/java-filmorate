@@ -11,10 +11,10 @@ public interface FilmStorage {
     Film updateFilm(Film film);
     void clearFilms();
 
-    void deleteFilmById(String idStr);
+    void deleteFilmById(Long id);
 
     List<Film> getFilms();
 
-    Film findFilmById(String idStr);
+    Film findFilmById(Long id);
 
 }
