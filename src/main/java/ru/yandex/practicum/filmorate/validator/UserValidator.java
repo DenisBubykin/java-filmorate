@@ -46,7 +46,7 @@ public class UserValidator {
 
     public static void isUserByUsers(List<User> users, User user) {
         if (!users.contains(user)) {
-            throw new NotFoundException(String.format("Пользователь № %d не найден", user.getId()));
+            throw new NotFoundException((String.format("Пользователь № %d не найден", user.getId())));
         }
     }
 }
