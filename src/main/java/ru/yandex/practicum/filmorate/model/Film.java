@@ -2,19 +2,22 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
 
-@AllArgsConstructor
+
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
-@ToString
+@Builder
 public class Film {
-
+    private long id;
     @NotNull
-    private int id;
-    @NotBlank
     private String name;
     @Size(min = 1, max = 200)
     private String description;
@@ -22,5 +25,5 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private Integer duration;
-
+    private Set<Long> usersLike;
 }

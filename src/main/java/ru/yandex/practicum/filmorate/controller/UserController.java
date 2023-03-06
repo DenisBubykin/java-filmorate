@@ -1,80 +1,82 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 
-
-import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-@Slf4j
 @RestController
+@Slf4j
 @RequestMapping("/users")
 public class UserController {
-    private int nextId = 1;
-    private HashMap<Integer, User> users = new HashMap<>();
 
-    private int getNextId() {
-        return nextId++;
-    }
+    private final UserService userService;
 
-    @PostMapping
-    public User create(@Valid @RequestBody User user) throws ValidationException {
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("ДР не может быть в будущем. ");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        log.info("POST / users request received");
-        int userId = getNextId();
-        user.setId(userId);
-        users.put(userId, user);
-        return user;
-    }
-
-    @PutMapping
-    public User update(@Valid @RequestBody User updateUser) throws ValidationException {
-        log.info("PUT /users request received");
-        int updateId = updateUser.getId();
-        if (users.containsKey(updateId)) {
-            if (isValid(updateUser)) {
-                users.put(updateId, updateUser);
-            } else {
-                log.error("Request PUT /users contains invalid data");
-                throw new ValidationException("Update user date is not valid");
-            }
-        } else {
-            log.error("Request PUT /users contains invalid id");
-            throw new ValidationException("Update user id is not valid");
-        }
-        log.info("PUT /users request done");
-        return updateUser;
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     public List<User> getUsers() {
-        log.info("Get all users {}", users.size());
-        List<User> list = new ArrayList<>(users.values());
-        log.info("GET /users request done");
-        return list;
+        log.debug("Список пользователей");
+        return userService.getUsers();
     }
 
-    public boolean isValid(User user){
-        LocalDate validBirthday = LocalDate.now();
-        boolean result = false;
-        if (!user.getEmail().isEmpty() && user.getEmail().contains("@")) {
-            if (!user.getLogin().isEmpty() && !user.getLogin().contains(" ")) {
-                if (user.getBirthday().isBefore(validBirthday)) {
-                    result = true;
-                }
-            }
-        }
-        return result;
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id) {
+        log.debug("Получили пользователя с id: {}", id);
+        return userService.findUserById(id);
+    }
+
+    @PostMapping()
+    public User createUser(@RequestBody User user) {
+        log.debug("Добавили: {}", user);
+        return userService.createUser(user);
+    }
+
+    @PutMapping()
+    public User updateUser(@RequestBody User user) {
+        log.debug("Обновили: {}", user);
+        return userService.updateUser(user);
+    }
+
+    @DeleteMapping
+    public void clearUsers() {
+        log.debug("Очистили список пользователей:");
+        userService.clearUsers();
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUserById(@PathVariable Long id) {
+        log.debug("Удалили пользователя по id: {}", id);
+        userService.deleteUserById(id);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        log.debug("Добавили пользователя с id {}, в друзья к пользователю с id {}", friendId, id);
+        userService.addFriendsForUsers(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        log.debug("Удалили пользователя с id {}, из друзей пользователя с id {}", friendId, id);
+        userService.deleteFriendsForUsers(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriendsUser(@PathVariable Long id) {
+        log.debug("Список друзей пользователя с id: {}", id);
+        return userService.getFriendsUser(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getUsers(@PathVariable Long id, @PathVariable Long otherId) {
+        log.debug("Список общих друзей пользователей: {}, {}", id, otherId);
+        return userService.getListFriends(id, otherId);
     }
 }
