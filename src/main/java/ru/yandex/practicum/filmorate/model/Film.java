@@ -16,7 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @Builder
 public class Film {
-    private Long id;
+    private long id;
     @NotNull
     private String name;
     @Size(min = 1, max = 200)

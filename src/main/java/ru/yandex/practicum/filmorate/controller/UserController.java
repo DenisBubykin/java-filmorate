@@ -27,9 +27,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public void getUserById(@PathVariable long id) {
+    public User getUserById(@PathVariable Long id) {
         log.debug("Получили пользователя с id: {}", id);
-        userService.findUserById(id);
+        return userService.findUserById(id);
     }
 
     @PostMapping()
@@ -51,31 +51,31 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable long id) {
+    public void deleteUserById(@PathVariable Long id) {
         log.debug("Удалили пользователя по id: {}", id);
         userService.deleteUserById(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable long id, @PathVariable long friendId) {
+    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         log.debug("Добавили пользователя с id {}, в друзья к пользователю с id {}", friendId, id);
         userService.addFriendsForUsers(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable long id, @PathVariable long friendId) {
+    public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
         log.debug("Удалили пользователя с id {}, из друзей пользователя с id {}", friendId, id);
         userService.deleteFriendsForUsers(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriendsUser(@PathVariable long id) {
+    public List<User> getFriendsUser(@PathVariable Long id) {
         log.debug("Список друзей пользователя с id: {}", id);
         return userService.getFriendsUser(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getUsers(@PathVariable long id, @PathVariable long otherId) {
+    public List<User> getUsers(@PathVariable Long id, @PathVariable Long otherId) {
         log.debug("Список общих друзей пользователей: {}, {}", id, otherId);
         return userService.getListFriends(id, otherId);
     }

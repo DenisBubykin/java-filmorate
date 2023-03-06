@@ -15,9 +15,7 @@ import java.util.TreeSet;
 @ToString
 @Builder
 public class User {
-
-    private long id;
-
+    private Long id;
     private String name;
     @NotNull
     private String login;

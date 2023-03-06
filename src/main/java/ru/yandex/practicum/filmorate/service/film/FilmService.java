@@ -38,13 +38,12 @@ public class FilmService {
         filmStorage.clearFilms();
     }
 
-    public void deleteFilmById(Long id) {
-        filmStorage.deleteFilmById(id);
+    public void deleteFilmById(Long idStr) {
+        filmStorage.deleteFilmById(idStr);
     }
 
-    public Film findFilmById(Long id) {
-
-        return filmStorage.findFilmById(id);
+    public Film findFilmById(Long idStr) {
+        return filmStorage.findFilmById(idStr);
     }
 
     public void addLikeFilms(Long idFilm, Long idUser) {
@@ -81,13 +80,13 @@ public class FilmService {
         }
     }
 
-    public List<Film> getPopularFilms(Long count) {
+    public List<Film> getPopularFilms(Integer countStr) {
         if (filmStorage.getFilms() == null) {
             throw new NotFoundException("Список фильмов пуст.");
         }
         return filmStorage.getFilms().stream()
                 .sorted(this::compareFilmsReverse)
-                .limit(count)
+                .limit(countStr)
                 .collect(Collectors.toList());
     }
 

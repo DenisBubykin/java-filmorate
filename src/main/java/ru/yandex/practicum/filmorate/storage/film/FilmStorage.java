@@ -11,10 +11,10 @@ public interface FilmStorage {
     Film updateFilm(Film film);
     void clearFilms();
 
-    void deleteFilmById(Long id);
+    void deleteFilmById(Long idStr);
 
     List<Film> getFilms();
 
-    Film findFilmById(Long id);
+    Film findFilmById(Long idStr);
 
 }

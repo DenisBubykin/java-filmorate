@@ -68,7 +68,7 @@ public class FilmController {
         filmService.deleteLikeFilm(id, userId);
     }
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(required = false) Long count) {
-        return filmService.getPopularFilms((Long) Objects.requireNonNullElse(count, "10"));
+    public List<Film> getPopularFilms(@RequestParam(required = false) Integer count) {
+        return filmService.getPopularFilms((Integer) Objects.requireNonNullElse(count, "10"));
     }
 }

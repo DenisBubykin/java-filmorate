@@ -43,14 +43,12 @@ public class UserService {
         return userStorage.findUserById(id);
     }
 
-    public void addFriendsForUsers(Long userId, Long friendId) {
-        addFriends(userId, friendId, userStorage.findUserById(userId));
-        addFriends(friendId, userId, userStorage.findUserById(friendId));
+    public void addFriendsForUsers(Long userIdStr, Long friendIdStr) {
+        addFriends(userIdStr, friendIdStr, userStorage.findUserById(userIdStr));
+        addFriends(friendIdStr, userIdStr, userStorage.findUserById(friendIdStr));
     }
 
     private void addFriends(Long idUser, Long idFriend, User userById) {
-
-
         UserValidator.isValidIdUsers(idUser);
         UserValidator.isValidIdUsers(idFriend);
         UserValidator.isUserByUsers(userStorage.getUsers(), userStorage.findUserById(idUser));
@@ -85,21 +83,21 @@ public class UserService {
         if (isFriendsByUser(idUser)) {
             if (!userById.getFriends().contains(idFriend)) {
                 throw new NotFoundException(String.format(
-                        "У пользователя нет в друзьях пользователя ", idFriend));
+                        "У пользователя № %d нет в друзьях пользователя № %d", idUser, idFriend));
             }
             TreeSet<Long> friends1 = userById.getFriends();
             friends1.remove(idFriend);
             userById.setFriends(friends1);
         } else {
-            throw new NotFoundException(String.format("У пользователя нет друзей", idUser));
+            throw new NotFoundException(String.format("У пользователя № %d нет друзей", idUser));
         }
     }
 
-    public List<User> getFriendsUser(Long id) {
-        List<Long> idFriendsList = new ArrayList<>(userStorage.findUserById(id).getFriends());
+    public List<User> getFriendsUser(Long idStr) {
+        List<Long> idFriendsList = new ArrayList<>(userStorage.findUserById(idStr).getFriends());
         List<User> friendsList = new ArrayList<>();
         for (Long idFriends : idFriendsList) {
-            friendsList.add(userStorage.findUserById(idFriends));
+            friendsList.add(userStorage.findUserById(Long.valueOf(idFriends)));
         }
         return friendsList;
     }
@@ -114,7 +112,7 @@ public class UserService {
             for (Long friendOtherId : userStorage.findUserById(otherId).getFriends()) {
                 for (Long friendId : userStorage.findUserById(id).getFriends()) {
                     if (friendOtherId.equals(friendId)) {
-                        result.add(userStorage.findUserById(friendId));
+                        result.add(userStorage.findUserById(Long.valueOf(friendId)));
                     }
                 }
             }

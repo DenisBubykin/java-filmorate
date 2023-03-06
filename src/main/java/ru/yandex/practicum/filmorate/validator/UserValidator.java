@@ -38,7 +38,7 @@ public class UserValidator {
         }
     }
 
-    public static void isValidIdUsers(Long id) {
+    public static void isValidIdUsers(long id) {
         if (id < 0) {
             throw new NotFoundException(String.format("Id пользователя {} отрицательный", id));
         }

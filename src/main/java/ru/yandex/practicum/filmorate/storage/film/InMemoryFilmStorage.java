@@ -16,12 +16,12 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> films = new HashMap<>();
-    private long idFilm = 0;
+    private int idFilm = 0;
 
     @Override
     public Film addFilm(Film film) {
         FilmValidator.isValidFilms(film);
-        long id = generateIdFilms();
+        int id = generateIdFilms();
         film.setId(id);
         films.put(film.getId(), film);
         return film;
@@ -46,11 +46,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilmById(Long id) {
-        if (!films.containsKey(id)) {
-            throw new NotFoundException("Фильм № %d не найден");
+    public void deleteFilmById(Long idStr) {
+        if (!films.containsKey(idStr)) {
+            throw new NotFoundException(String.format("Фильм № %d не найден", idStr));
         }
-        films.remove(id);
+        films.remove(idStr);
     }
 
     @Override
@@ -59,16 +59,16 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilmById(Long id) {
-        if (!films.containsKey(id)) {
-            throw new NotFoundException(String.format("Фильм № %d не найден", id));
+    public Film findFilmById(Long idStr) {
+        if (!films.containsKey(idStr)) {
+            throw new NotFoundException(String.format("Фильм № %d не найден", idStr));
         }
-        return getFilms().stream().filter(f -> f.getId() == id)
+        return getFilms().stream().filter(f -> f.getId() == idStr)
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException(String.format("Film %d not found", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Film %d not found", idStr)));
     }
 
-    private long generateIdFilms() {
+    private int generateIdFilms() {
         return ++idFilm;
     }
 }
