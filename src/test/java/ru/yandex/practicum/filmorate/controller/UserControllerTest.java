@@ -1,120 +1,155 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 class UserControllerTest {
+    InMemoryUserStorage inMemoryUserStorage = new InMemoryUserStorage();
+    UserService userService = new UserService(inMemoryUserStorage);
+    UserController userController = new UserController(userService);
+    User expectedUser;
+    User expectedUser1;
 
-    private UserController uController;
-    static private String name;
-    static private String login = "login";
-    static private String email = "test@yandex.ru";
-    static private LocalDate date = LocalDate.of(1999, 10, 5);
+    @Test
+    void isValidUser() throws ValidationException {
+        expectedUser = User.builder()
+                .name("user")
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
 
-    @BeforeAll
-    public static void createFields(){
-        name = "name";
-        login = "login";
-        email = "test@yandex.ru";
-        date = LocalDate.of(1999, 10, 5);
-    }
+        userController.createUser(expectedUser);
+        User actualUser = userController.getUsers().get(0);
 
-    @BeforeEach
-    public void createController() {
-        uController = new UserController();
+        assertEquals(expectedUser, actualUser, "Пользователь не добавлен");
     }
 
     @Test
-    void ShouldValidateUserEmail(){
-        String email2 = " ";
-        String email3 = "testyandex.ru";
-        User user1 = new User(1, name, login, email, date);
-        User user2 = new User(2, name, login, email2, date);
-        User user3 = new User(3, name, login, email3, date);
-        try {
-            uController.create(user1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(user1, uController.getUsers().get(0));
-        assertThrows(ValidationException.class, () -> uController.update(user2));
-        assertThrows(ValidationException.class, () -> uController.update(user3));
+    void isValidEmailUserBlank() {
+        expectedUser = User.builder()
+                .name("user")
+                .login("login")
+                .email(" ")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+        expectedUser1 = User.builder()
+                .name("user")
+                .login("login")
+                .email("")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            userController.createUser(expectedUser);
+            userController.createUser(expectedUser1);
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    void ShouldValidateLogin() {
-        String login2 = "";
-        String login3 = "lo gin";
-        User user1 = new User(1, name, login, email, date);
-        User user2 = new User(2, name, login2, email, date);
-        User user3 = new User(3, name, login3, email, date);
-        try {
-            uController.create(user1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(user1, uController.getUsers().get(0));
-        assertThrows(ValidationException.class, () -> uController.update(user2));
-        assertThrows(ValidationException.class, () -> uController.update(user3));
+    void isValidEmailWithSpecialSymbol() {
+        expectedUser = User.builder()
+                .name("user")
+                .login("login")
+                .email("useryandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            userController.createUser(expectedUser);
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    void ShouldUseLoginAsNameIfNameIsEmpty() {
-        User user = new User(0, "", login, email, date);
-        try {
-            uController.create(user);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(user.getLogin(), uController.getUsers().get(0).getLogin());
+    void isValidLoginUserBlank() {
+        expectedUser = User.builder()
+                .name("user")
+                .login("")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+        expectedUser1 = User.builder()
+                .name("user")
+                .login(" ")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            userController.createUser(expectedUser);
+            userController.createUser(expectedUser1);
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    void ShouldValidateBirthday(){
-        LocalDate date2 = LocalDate.of(2023, 10, 5);
-        User user1 = new User(1, name, login, email, date);
-        User user2 = new User(2, name,login, email, date2);
-        try {
-            uController.create(user1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(user1, uController.getUsers().get(0));
-        assertThrows(ValidationException.class, () -> uController.update(user2));
+    void isValidNameUserBlank() throws ValidationException {
+        expectedUser = User.builder()
+                .name(" ")
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        userController.createUser(expectedUser);
+        User actualUser = userController.getUsers().get(0);
+
+        assertEquals(expectedUser.getName(), actualUser.getName(),
+                "Пустой логин не заменен на имя пользователя");
     }
 
     @Test
-    void ShouldValidateId(){
-        User user1 = new User(1, name, login, email, date);
-        User user2 = new User(2, name, login, email, date);
-        User user3 = new User(3, name, login, email, date);
-        try {
-            uController.create(user1);
-            uController.create(user2);
-            uController.create(user3);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        User updateUser1 = new User(1, "name", login, email, date);
-        User updateUser2 = new User(0, "name", login, email, date);
-        User updateUser3 = new User(-1,"name", login, email, date);
-        try {
-            uController.update(updateUser1);
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-        }
-        assertEquals(updateUser1, uController.getUsers().get(0));
-        assertThrows(ValidationException.class, () -> uController.update(updateUser2));
-        assertThrows(ValidationException.class, () -> uController.update(updateUser3));
+    void isValidNameUserNull() throws ValidationException {
+        expectedUser = User.builder()
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        userController.createUser(expectedUser);
+        User actualUser = userController.getUsers().get(0);
+
+        assertEquals(expectedUser.getName(), actualUser.getName(),
+                "Пустой логин не заменен на имя пользователя");
+    }
+
+    @Test
+    void isValidNameUserEmpty() throws ValidationException {
+        expectedUser = User.builder()
+                .name("")
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.parse("2000-12-12"))
+                .build();
+
+        userController.createUser(expectedUser);
+        User actualUser = userController.getUsers().get(0);
+
+        assertEquals(expectedUser.getName(), actualUser.getName(),
+                "Пустой логин не заменен на имя пользователя");
+    }
+
+    @Test
+    void isValidBirthdayUser() {
+        expectedUser = User.builder()
+                .name("user")
+                .login("login")
+                .email("user@yandex.ru")
+                .birthday(LocalDate.now().plusDays(1))
+                .build();
+
+        Throwable thrown = assertThrows(ValidationException.class, () -> {
+            userController.createUser(expectedUser);
+        });
+        assertNotNull(thrown.getMessage());
     }
 }
