@@ -5,8 +5,7 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.TreeSet;
-
+import java.util.Set;
 
 @AllArgsConstructor
 @Getter
@@ -14,6 +13,7 @@ import java.util.TreeSet;
 @EqualsAndHashCode
 @ToString
 @Builder
+@RequiredArgsConstructor
 public class User {
     private Long id;
     private String name;
@@ -22,8 +22,5 @@ public class User {
     @Email
     private String email;
     private LocalDate birthday;
-
-    private TreeSet<Long> friends;
-
-
+    private Set<Long> friends;
 }

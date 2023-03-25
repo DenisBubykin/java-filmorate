@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service.film;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -18,7 +19,7 @@ public class FilmService {
     private final FilmStorage filmStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -52,18 +53,18 @@ public class FilmService {
         FilmValidator.isFilmByFilms(filmStorage.getFilms(), findFilmById(idFilm));
 
         if (isLikesByFilm(idFilm)) {
-            Set<Long> likes = findFilmById(idFilm).getUsersLike();
+            Set<Long> likes = findFilmById(idFilm).getLikes();
             likes.add(idUser);
-            findFilmById(idFilm).setUsersLike(likes);
+            findFilmById(idFilm).setLikes(likes);
         } else {
             TreeSet<Long> likes = new TreeSet<>();
             likes.add(idUser);
-            findFilmById(idFilm).setUsersLike(likes);
+            findFilmById(idFilm).setLikes(likes);
         }
     }
 
     private Boolean isLikesByFilm(Long id) {
-        return filmStorage.findFilmById(id).getUsersLike() != null;
+        return filmStorage.findFilmById(id).getLikes() != null;
     }
 
     public void deleteLikeFilm(Long idFilm, Long idUser) {
@@ -72,9 +73,9 @@ public class FilmService {
         FilmValidator.isFilmByFilms(filmStorage.getFilms(), findFilmById(idFilm));
 
         if (isLikesByFilm(idFilm)) {
-            Set<Long> likes = findFilmById(idFilm).getUsersLike();
+            Set<Long> likes = findFilmById(idFilm).getLikes();
             likes.remove(idUser);
-            findFilmById(idFilm).setUsersLike(likes);
+            findFilmById(idFilm).setLikes(likes);
         } else {
             throw new NotFoundException(String.format("У фильма № %d нет лайков", idFilm));
         }
@@ -93,11 +94,11 @@ public class FilmService {
     private int compareFilmsReverse(Film f1, Film f2) {
         int comp1 = 0;
         int comp2 = 0;
-        if (f1.getUsersLike() != null) {
-            comp1 = f1.getUsersLike().size();
+        if (f1.getLikes() != null) {
+            comp1 = f1.getLikes().size();
         }
-        if (f2.getUsersLike() != null) {
-            comp2 = f2.getUsersLike().size();
+        if (f2.getLikes() != null) {
+            comp2 = f2.getLikes().size();
         }
         return comp2 - comp1;
     }
