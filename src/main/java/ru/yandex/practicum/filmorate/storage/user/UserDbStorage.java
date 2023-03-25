@@ -19,14 +19,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getUsers() {
-        String sql = "SELECT * FROM user ORDER BY id";
+        String sql = "SELECT * FROM user_ ORDER BY id";
         return jdbcTemplate.query(sql, this::mapToUser);
     }
 
     @Override
     public User createUser(User user) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("user")
+                .withTableName("user_")
                 .usingGeneratedKeyColumns("id");
 
         Map<String, Object> values = new HashMap<>();
@@ -41,26 +41,26 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        String sql = "UPDATE user SET name = ?, login = ?, email = ?, birthday = ? WHERE id = ?";
+        String sql = "UPDATE user_ SET name = ?, login = ?, email = ?, birthday = ? WHERE id = ?";
         jdbcTemplate.update(sql, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday(), user.getId());
         return user;
     }
 
     @Override
     public void clearUsers() {
-        String sql = "TRUNCATE TABLE user";
+        String sql = "TRUNCATE TABLE user_";
         jdbcTemplate.update(sql);
     }
 
     @Override
     public void deleteUserById(Long id) {
-        String sql = "DELETE FROM user WHERE id = ?";
+        String sql = "DELETE FROM user_ WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     @Override
     public User findUserById(Long id) {
-        String sql = "SELECT * FROM user WHERE id = ?";
+        String sql = "SELECT * FROM user_ WHERE id = ?";
         List<User> result = jdbcTemplate.query(sql, this::mapToUser, id);
         if (result.isEmpty()) {
             return null;
